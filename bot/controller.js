@@ -108,7 +108,7 @@ export const handleTelegramMessage = async (message) => {
   const adminCheck = await requireAdmin(userId)
 
   if (!adminCheck.ok) {
-    await sendTelegramMessage(chatId, 'Нет доступа. Попросите администратора выдать права.')
+    await sendTelegramMessage(chatId, `Нет доступа. Попросите администратора выдать права.\nВаш Telegram ID: ${userId}`)
     return
   }
 

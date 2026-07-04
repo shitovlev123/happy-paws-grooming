@@ -1,9 +1,18 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 
+const vercelStateNamespace = (
+  process.env.BOT_STATE_NAMESPACE ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  process.env.VERCEL_URL ||
+  'vercel'
+)
+  .replace(/[^a-zA-Z0-9_-]/g, '_')
+  .slice(0, 80)
+
 const DEFAULT_STATE_FILE =
   process.env.VERCEL === '1'
-    ? '/tmp/happy-paws-bot-state.json'
+    ? `/tmp/happy-paws-bot-state-${vercelStateNamespace}.json`
     : join(process.cwd(), 'bot', 'data', 'state.json')
 
 const STATE_FILE = process.env.BOT_STATE_FILE || DEFAULT_STATE_FILE
