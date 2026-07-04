@@ -82,16 +82,20 @@ export const handleTelegramMessage = async (message) => {
   const text = message.text || ''
   const chatId = message.chat.id
   const userId = message.from.id
+  const bootstrap = await bootstrapAdmin(userId)
 
-  if (text.startsWith('/start')) {
-    const { created } = await bootstrapAdmin(userId)
+  if (bootstrap.created) {
     await sendTelegramMessage(
       chatId,
-      created
-        ? 'Вы первый пользователь бота и получили права главного администратора.'
-        : 'Бот Happy Paws активен.',
+      'Вы первый пользователь бота и получили права главного администратора.',
       { reply_markup: mainKeyboard },
     )
+    await sendAdminPanel(chatId)
+    return
+  }
+
+  if (text.startsWith('/start')) {
+    await sendTelegramMessage(chatId, 'Бот Happy Paws активен.', { reply_markup: mainKeyboard })
 
     if (await isAdmin(userId)) {
       await sendAdminPanel(chatId)
