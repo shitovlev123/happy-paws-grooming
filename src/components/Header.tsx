@@ -1,10 +1,9 @@
-import { CalendarCheck, LayoutDashboard, PawPrint } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
+import { CalendarCheck, PawPrint } from 'lucide-react'
 
 export const Header = () => {
   return (
     <header className="site-header">
-      <Link className="brand" to="/" aria-label="Happy Paws Grooming">
+      <a className="brand" href="/" aria-label="Happy Paws Grooming">
         <span className="brand-mark">
           <PawPrint size={22} />
         </span>
@@ -12,18 +11,15 @@ export const Header = () => {
           <strong>Happy Paws</strong>
           <small>Grooming studio</small>
         </span>
-      </Link>
+      </a>
 
       <nav className="nav-links" aria-label="Основная навигация">
-        <a href="/#services">Услуги</a>
-        <a href="/#booking">Запись</a>
-        <NavLink to="/admin">
-          <LayoutDashboard size={18} />
-          Админка
-        </NavLink>
+        <a href="#services">Услуги</a>
+        <a href="#benefits">Преимущества</a>
+        <a href="#booking">Запись</a>
       </nav>
 
-      <a className="header-action" href="/#booking">
+      <a className="header-action" href="#booking">
         <CalendarCheck size={18} />
         Записать
       </a>

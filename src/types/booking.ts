@@ -1,9 +1,6 @@
 export type PetType = 'dog' | 'cat' | 'other'
 
-export type BookingStatus = 'new' | 'confirmed' | 'completed' | 'cancelled'
-
-export type Booking = {
-  id: string
+export type BookingRequest = {
   ownerName: string
   phone: string
   petName: string
@@ -13,16 +10,6 @@ export type Booking = {
   serviceName: string
   preferredDate: string
   comment: string
-  status: BookingStatus
-  createdAt: string
-  updatedAt: string
-}
-
-export type BookingDraft = Omit<
-  Booking,
-  'id' | 'status' | 'createdAt' | 'updatedAt' | 'serviceName'
-> & {
-  serviceName?: string
 }
 
 export type Service = {

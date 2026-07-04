@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CalendarCheck, Send } from 'lucide-react'
 import { petTypeLabels, services } from '../data/content'
-import { bookingStorage } from '../lib/storage'
-import { formatTelegramMessage, notifyTelegram } from '../lib/telegram'
+import { sendBookingRequest } from '../lib/bookingApi'
 import type { FormEvent } from 'react'
 import type { PetType } from '../types/booking'
 
@@ -31,7 +30,7 @@ const initialForm: FormState = {
 export const BookingForm = () => {
   const [form, setForm] = useState<FormState>(initialForm)
   const [successMessage, setSuccessMessage] = useState('')
-  const [telegramPreview, setTelegramPreview] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const selectedService = useMemo(
     () => services.find((service) => service.id === form.serviceId) ?? services[0],
@@ -44,22 +43,19 @@ export const BookingForm = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    const booking = bookingStorage.create({
-      ...form,
-      serviceName: selectedService.title,
-    })
-
-    setTelegramPreview(formatTelegramMessage(booking))
-    setSuccessMessage('Заявка сохранена. Администратор увидит ее в CRM-админке.')
-    setForm(initialForm)
+    setIsSubmitting(true)
 
     try {
-      await notifyTelegram(booking)
+      await sendBookingRequest({
+        ...form,
+        serviceName: selectedService.title,
+      })
+      setSuccessMessage('Спасибо! Мы получили заявку и скоро свяжемся для подтверждения.')
+      setForm(initialForm)
     } catch {
-      setSuccessMessage(
-        'Заявка сохранена. Telegram endpoint пока не отвечает, но сообщение сформировано.',
-      )
+      setSuccessMessage('Не удалось отправить заявку. Пожалуйста, попробуйте ещё раз.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -67,14 +63,14 @@ export const BookingForm = () => {
     <section className="section booking-section" id="booking">
       <div className="booking-copy">
         <span className="section-kicker">Онлайн-запись</span>
-        <h2>Оставьте заявку, а администратор подтвердит удобное время</h2>
+        <h2>Оставьте заявку, а команда салона подтвердит удобное время</h2>
         <p>
-          Форма сохраняет заявку в localStorage, показывает ее в `/admin` и готовит сообщение для
-          Telegram-бота. Это демонстрирует полный путь малого бизнеса: сайт, CRM и уведомления.
+          Расскажите немного о питомце и желаемой услуге. Мы уточним детали, подберём мастера и
+          подтвердим визит.
         </p>
         <div className="booking-note">
           <CalendarCheck size={22} />
-          <span>CRM-статус заявки начинается с “новая”.</span>
+          <span>Обычно отвечаем в течение 10-15 минут в рабочее время.</span>
         </div>
       </div>
 
@@ -168,17 +164,12 @@ export const BookingForm = () => {
           </label>
         </div>
 
-        <button className="button primary submit-button" type="submit">
+        <button className="button primary submit-button" type="submit" disabled={isSubmitting}>
           <Send size={18} />
-          Отправить заявку
+          {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
         </button>
 
         {successMessage && <p className="form-success">{successMessage}</p>}
-        {telegramPreview && (
-          <pre className="telegram-preview" aria-label="Telegram сообщение">
-            {telegramPreview}
-          </pre>
-        )}
       </form>
     </section>
   )

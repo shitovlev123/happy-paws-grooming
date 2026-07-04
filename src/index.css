@@ -580,6 +580,11 @@ textarea:focus {
   margin-top: 18px;
 }
 
+.submit-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .form-success {
   margin: 16px 0 0;
   padding: 12px 14px;
@@ -587,17 +592,6 @@ textarea:focus {
   color: #285038;
   background: #e3f5e9;
   font-weight: 800;
-}
-
-.telegram-preview {
-  overflow: auto;
-  margin: 14px 0 0;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff8ec;
-  color: #46534a;
-  white-space: pre-wrap;
 }
 
 .admin-shell {
