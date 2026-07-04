@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { PaperPlaneTilt } from '@phosphor-icons/react'
 import { petTypeLabels, services } from '../data/content'
 import { sendBookingRequest } from '../lib/bookingApi'
 import type { FormEvent } from 'react'
@@ -49,23 +50,29 @@ export const BookingForm = () => {
         ...form,
         serviceName: selectedService.title,
       })
-      setSuccessMessage('Спасибо! Мы получили заявку и скоро свяжемся для подтверждения.')
+      setSuccessMessage('Заявка отправлена. Мы свяжемся с вами для подтверждения времени.')
       setForm(initialForm)
     } catch {
-      setSuccessMessage('Не удалось отправить заявку. Пожалуйста, попробуйте ещё раз.')
+      setSuccessMessage('Не удалось отправить заявку. Проверьте связь и попробуйте еще раз.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <section className="booking-section" id="booking">
-      <h2>Готовы к счастливому дню груминга?</h2>
+    <section className="section booking-section" id="booking">
+      <div className="booking-copy reveal">
+        <span>Онлайн-запись</span>
+        <h2>Расскажите о питомце, остальное возьмем на себя</h2>
+        <p>
+          После отправки заявки администратор уточнит детали ухода и подтвердит удобное время.
+        </p>
+      </div>
 
-      <form className="booking-form" onSubmit={handleSubmit}>
+      <form className="booking-form reveal" onSubmit={handleSubmit}>
         <div className="form-grid">
           <label htmlFor="ownerName">
-            <span>Ваше имя</span>
+            Имя владельца
             <input
               id="ownerName"
               required
@@ -75,7 +82,7 @@ export const BookingForm = () => {
             />
           </label>
           <label htmlFor="phone">
-            <span>Телефон</span>
+            Телефон
             <input
               id="phone"
               required
@@ -84,8 +91,8 @@ export const BookingForm = () => {
               placeholder="+7 999 123-45-67"
             />
           </label>
-          <label htmlFor="petName" className="full-field">
-            <span>Имя питомца</span>
+          <label htmlFor="petName">
+            Имя питомца
             <input
               id="petName"
               required
@@ -94,8 +101,8 @@ export const BookingForm = () => {
               placeholder="Молли"
             />
           </label>
-          <label htmlFor="petType" className="full-field">
-            <span>Тип питомца</span>
+          <label htmlFor="petType">
+            Тип питомца
             <select
               id="petType"
               value={form.petType}
@@ -108,17 +115,17 @@ export const BookingForm = () => {
               ))}
             </select>
           </label>
-          <label htmlFor="breed" className="full-field">
-            <span>Порода</span>
+          <label htmlFor="breed">
+            Порода
             <input
               id="breed"
               value={form.breed}
               onChange={(event) => updateField('breed', event.target.value)}
-              placeholder="Шпиц, мейн-кун..."
+              placeholder="Шпиц, мейн-кун"
             />
           </label>
-          <label htmlFor="serviceId" className="full-field">
-            <span>Услуга</span>
+          <label htmlFor="serviceId">
+            Услуга
             <select
               id="serviceId"
               value={form.serviceId}
@@ -131,8 +138,8 @@ export const BookingForm = () => {
               ))}
             </select>
           </label>
-          <label htmlFor="preferredDate" className="full-field">
-            <span>Предпочтительная дата</span>
+          <label htmlFor="preferredDate">
+            Желаемая дата
             <input
               id="preferredDate"
               required
@@ -142,18 +149,19 @@ export const BookingForm = () => {
             />
           </label>
           <label className="full-field" htmlFor="comment">
-            <span>Комментарий</span>
+            Комментарий
             <textarea
               id="comment"
               value={form.comment}
               onChange={(event) => updateField('comment', event.target.value)}
-              placeholder="Особенности характера, шерсти или пожелания"
+              placeholder="Характер питомца, состояние шерсти или пожелания"
             />
           </label>
         </div>
 
         <button className="button primary submit-button" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
+          <span>{isSubmitting ? 'Отправляем' : 'Отправить заявку'}</span>
+          <PaperPlaneTilt size={20} weight="duotone" />
         </button>
 
         {successMessage && <p className="form-success">{successMessage}</p>}

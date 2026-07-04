@@ -1,20 +1,22 @@
-import { PawPrint } from 'lucide-react'
+import { PawPrint } from '@phosphor-icons/react'
 
 export const Header = () => {
   return (
     <header className="site-header">
       <a className="brand" href="/" aria-label="Happy Paws Grooming">
         <span className="brand-mark">
-          <PawPrint size={24} />
+          <PawPrint size={24} weight="duotone" />
         </span>
-        <strong>Счастливые Лапки</strong>
+        <span>
+          <strong>Happy Paws</strong>
+          <small>grooming salon</small>
+        </span>
       </a>
 
       <nav className="nav-links" aria-label="Основная навигация">
         <a href="#services">Услуги</a>
-        <a href="#services">Цены</a>
-        <a href="#groomers">О нас</a>
-        <a href="#booking">Контакты</a>
+        <a href="#process">Как проходит визит</a>
+        <a href="#groomers">Мастера</a>
         <a href="#reviews">Отзывы</a>
       </nav>
 

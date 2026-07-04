@@ -1,38 +1,44 @@
+import { ChatCircleText, CheckCircle, Clock, PawPrint } from '@phosphor-icons/react'
+import type { CSSProperties } from 'react'
+
 const steps = [
   {
-    icon: '📅',
-    title: 'Выберите услугу',
-    text: 'Просто и быстро',
+    title: 'Вы выбираете уход',
+    text: 'Один сервис или комплексный визит.',
+    icon: PawPrint,
   },
   {
-    icon: '✍️',
-    title: 'Заполните детали',
-    text: 'О питомце',
+    title: 'Мы уточняем детали',
+    text: 'Порода, шерсть, характер и пожелания.',
+    icon: ChatCircleText,
   },
   {
-    icon: '✅',
-    title: 'Получите подтверждение',
-    text: 'Мы свяжемся с вами',
+    title: 'Подтверждаем время',
+    text: 'Администратор согласует запись.',
+    icon: Clock,
   },
   {
-    icon: '📍',
-    title: 'Посетите салон',
-    text: 'В назначенное время',
+    title: 'Питомец приезжает спокойно',
+    text: 'Мастер ведет уход мягко и внимательно.',
+    icon: CheckCircle,
   },
 ]
 
 export const HowItWorks = () => {
   return (
-    <section className="section process-section">
-      <h2 className="plain-heading">Как это работает</h2>
+    <section className="section process-section" id="process">
+      <div className="section-intro narrow reveal">
+        <span>Как проходит визит</span>
+        <h2>Понятный маршрут без суеты</h2>
+      </div>
 
       <div className="process-line">
-        {steps.map((step, index) => (
-          <article className="process-step" key={step.title}>
-            <span className="step-icon">{step.icon}</span>
-            <strong>{index + 1}</strong>
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
+        {steps.map(({ title, text, icon: Icon }, index) => (
+          <article className="process-step reveal" style={{ '--reveal-index': index } as CSSProperties} key={title}>
+            <span className="process-index">{String(index + 1).padStart(2, '0')}</span>
+            <Icon size={30} weight="duotone" />
+            <h3>{title}</h3>
+            <p>{text}</p>
           </article>
         ))}
       </div>

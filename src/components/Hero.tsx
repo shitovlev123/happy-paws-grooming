@@ -1,44 +1,24 @@
-import { ShieldCheck, Star } from 'lucide-react'
-import heroPets from '../assets/hero-pets.png'
+import heroPets from '../assets/hero-pets-calm.png'
 
 export const Hero = () => {
   return (
-    <section className="hero">
-      <div className="hero-copy">
-        <h1>Бережный груминг для счастливых питомцев</h1>
+    <section className="hero" aria-labelledby="hero-title">
+      <img className="hero-image" src={heroPets} alt="Собака и кот отдыхают в светлом груминг-салоне" />
+      <div className="hero-overlay" />
+      <div className="hero-copy reveal">
+        <p className="hero-note">Спокойный груминг для собак и кошек</p>
+        <h1 id="hero-title">Забота, после которой питомец сияет</h1>
         <p>
-          Профессиональный уход и забота для ваших пушистых друзей. Полный цикл груминга для собак и кошек
-          в уютной, теплой обстановке.
+          Бережный уход, чистая студия и мастера, которые умеют работать спокойно. Запишите питомца
+          на удобный день, мы подтвердим визит.
         </p>
         <div className="hero-actions">
           <a className="button primary" href="#booking">
-            Записать питомца
+            Записаться
           </a>
           <a className="button secondary" href="#services">
-            Посмотреть услуги
+            Услуги
           </a>
-        </div>
-      </div>
-
-      <div className="hero-media" aria-label="Счастливые питомцы после груминга">
-        <img src={heroPets} alt="Счастливые собака и кот в светлом grooming-салоне" />
-        <div className="floating-badge rating-badge">
-          <strong>4.9/5 Рейтинг</strong>
-          <span>
-            <Star size={13} fill="currentColor" />
-            <Star size={13} fill="currentColor" />
-            <Star size={13} fill="currentColor" />
-            <Star size={13} fill="currentColor" />
-            <Star size={13} fill="currentColor" />
-          </span>
-          <small>250+ отзывов</small>
-        </div>
-        <div className="floating-badge safe-badge">
-          <ShieldCheck size={22} />
-          <span>
-            <strong>Safe продукты</strong>
-            <small>Нежные и мягкие</small>
-          </span>
         </div>
       </div>
     </section>
