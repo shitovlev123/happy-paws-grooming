@@ -13,7 +13,7 @@ const statusLabels = {
 
 export const formatBookingMessage = (booking) =>
   [
-    `Заявка ${booking.id}`,
+    `Новая заявка ${booking.id}`,
     `Статус: ${statusLabels[booking.status] || booking.status}`,
     `Клиент: ${booking.ownerName}`,
     `Телефон: ${booking.phone}`,
@@ -34,16 +34,29 @@ export const bookingKeyboard = (bookingId) => ({
   ],
 })
 
+export const mainKeyboard = {
+  keyboard: [[{ text: 'Админ-панель' }]],
+  resize_keyboard: true,
+}
+
+export const adminPanelKeyboard = {
+  inline_keyboard: [
+    [{ text: 'Последние заявки', callback_data: 'panel:bookings' }],
+    [{ text: 'Выдать админку', callback_data: 'panel:grant' }],
+    [{ text: 'Администраторы', callback_data: 'panel:admins' }],
+  ],
+}
+
+export const adminPanelText = [
+  'Админ-панель Happy Paws',
+  'Здесь приходят новые заявки с сайта.',
+  'Вы можете подтверждать, выполнять или отменять заявки кнопками под сообщением.',
+].join('\n')
+
 export const formatHelpMessage = (isAdminUser) => {
   if (!isAdminUser) {
-    return 'Здравствуйте! Если администратор уже назначен, попросите его выдать вам доступ.'
+    return 'Здравствуйте! Доступ к админ-панели выдаёт действующий администратор.'
   }
 
-  return [
-    'Панель администратора Happy Paws',
-    '/bookings - последние заявки',
-    '/admins - список администраторов',
-    '/grant TELEGRAM_ID - выдать доступ администратору',
-    '/status ID new|confirmed|completed|cancelled - сменить статус заявки',
-  ].join('\n')
+  return 'Нажмите кнопку «Админ-панель», чтобы открыть управление заявками и администраторами.'
 }

@@ -1,11 +1,7 @@
 import type { BookingRequest } from '../types/booking'
 
 export const sendBookingRequest = async (booking: BookingRequest) => {
-  if (import.meta.env.VITE_BOOKING_API_ENABLED !== 'true') {
-    return { ok: true, demo: true }
-  }
-
-  const response = await fetch('/api/bookings', {
+  const response = await fetch('/api/bot', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,5 +13,5 @@ export const sendBookingRequest = async (booking: BookingRequest) => {
     throw new Error('Booking request failed')
   }
 
-  return response.json() as Promise<{ ok: boolean; bookingId?: string }>
+  return response.json() as Promise<{ ok: boolean; bookingId?: string; notifiedAdmins?: number }>
 }

@@ -11,17 +11,38 @@ const STATE_FILE = process.env.BOT_STATE_FILE || DEFAULT_STATE_FILE
 const emptyState = {
   ownerId: null,
   admins: [],
+  pendingAdminGrants: {},
   bookings: [],
 }
 
 const normalizeId = (id) => String(id)
 
+const envAdmins = () =>
+  (process.env.TELEGRAM_ADMIN_IDS || '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+
+const mergeEnvAdmins = (state) => {
+  const admins = envAdmins()
+
+  if (admins.length === 0) {
+    return state
+  }
+
+  return {
+    ...state,
+    ownerId: state.ownerId || admins[0],
+    admins: Array.from(new Set([...admins, ...(state.admins || [])])),
+  }
+}
+
 export const readState = async () => {
   try {
     const raw = await readFile(STATE_FILE, 'utf8')
-    return { ...emptyState, ...JSON.parse(raw) }
+    return mergeEnvAdmins({ ...emptyState, ...JSON.parse(raw) })
   } catch {
-    return { ...emptyState }
+    return mergeEnvAdmins({ ...emptyState })
   }
 }
 
@@ -49,6 +70,14 @@ export const isAdmin = async (userId) => {
   return state.admins.includes(normalizeId(userId))
 }
 
+export const requireAdmin = async (userId) => {
+  const state = await readState()
+  return {
+    ok: state.admins.includes(normalizeId(userId)),
+    state,
+  }
+}
+
 export const grantAdmin = async (requesterId, targetId) => {
   const state = await readState()
 
@@ -60,6 +89,32 @@ export const grantAdmin = async (requesterId, targetId) => {
   state.admins = Array.from(new Set([...state.admins, id]))
   await writeState(state)
   return { ok: true, state }
+}
+
+export const setPendingAdminGrant = async (userId, messageId) => {
+  const state = await readState()
+  state.pendingAdminGrants = {
+    ...(state.pendingAdminGrants || {}),
+    [normalizeId(userId)]: messageId,
+  }
+  await writeState(state)
+}
+
+export const clearPendingAdminGrant = async (userId) => {
+  const state = await readState()
+  delete state.pendingAdminGrants?.[normalizeId(userId)]
+  await writeState(state)
+}
+
+export const hasPendingAdminGrant = async (userId, replyToMessageId) => {
+  const state = await readState()
+  const pendingMessageId = state.pendingAdminGrants?.[normalizeId(userId)]
+  return Boolean(pendingMessageId && pendingMessageId === replyToMessageId)
+}
+
+export const getAdmins = async () => {
+  const state = await readState()
+  return state.admins
 }
 
 export const saveBooking = async (booking) => {

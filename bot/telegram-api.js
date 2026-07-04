@@ -45,3 +45,10 @@ export const getUpdates = (offset) =>
     timeout: 25,
     allowed_updates: ['message', 'callback_query'],
   })
+
+export const setWebhook = (url) =>
+  telegramRequest('setWebhook', {
+    url,
+    allowed_updates: ['message', 'callback_query'],
+    drop_pending_updates: false,
+  })
