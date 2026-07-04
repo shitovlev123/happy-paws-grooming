@@ -1,36 +1,44 @@
-import { ArrowDown, CalendarDays, Sparkles } from 'lucide-react'
+import { ShieldCheck, Star } from 'lucide-react'
 import heroPets from '../assets/hero-pets.png'
 
 export const Hero = () => {
   return (
     <section className="hero">
       <div className="hero-copy">
-        <span className="eyebrow">
-          <Sparkles size={17} />
-          Бережный груминг без суеты
-        </span>
-        <h1>Салон красоты и заботы для счастливых питомцев</h1>
+        <h1>Бережный груминг для счастливых питомцев</h1>
         <p>
-          Happy Paws Grooming помогает собакам и котам выглядеть ухоженно, а владельцам
-          спокойно планировать визит через понятную онлайн-запись.
+          Профессиональный уход и забота для ваших пушистых друзей. Полный цикл груминга для собак и кошек
+          в уютной, теплой обстановке.
         </p>
         <div className="hero-actions">
           <a className="button primary" href="#booking">
-            <CalendarDays size={19} />
             Записать питомца
           </a>
           <a className="button secondary" href="#services">
-            <ArrowDown size={19} />
             Посмотреть услуги
           </a>
         </div>
       </div>
 
-      <div className="hero-media" aria-label="Счастливая собака и спокойный кот после груминга">
+      <div className="hero-media" aria-label="Счастливые питомцы после груминга">
         <img src={heroPets} alt="Счастливые собака и кот в светлом grooming-салоне" />
-        <div className="hero-note">
-          <strong>97%</strong>
-          <span>клиентов возвращаются на повторный уход</span>
+        <div className="floating-badge rating-badge">
+          <strong>4.9/5 Рейтинг</strong>
+          <span>
+            <Star size={13} fill="currentColor" />
+            <Star size={13} fill="currentColor" />
+            <Star size={13} fill="currentColor" />
+            <Star size={13} fill="currentColor" />
+            <Star size={13} fill="currentColor" />
+          </span>
+          <small>250+ отзывов</small>
+        </div>
+        <div className="floating-badge safe-badge">
+          <ShieldCheck size={22} />
+          <span>
+            <strong>Safe продукты</strong>
+            <small>Нежные и мягкие</small>
+          </span>
         </div>
       </div>
     </section>

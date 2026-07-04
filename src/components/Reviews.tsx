@@ -1,21 +1,21 @@
-import { Quote } from 'lucide-react'
 import { reviews } from '../data/content'
 
 export const Reviews = () => {
   return (
-    <section className="section reviews-section">
-      <div className="section-heading">
-        <span className="section-kicker">Отзывы</span>
-        <h2>Владельцы ценят спокойствие питомца и удобство записи</h2>
-      </div>
+    <section className="section reviews-section" id="reviews">
+      <h2 className="plain-heading">Отзывы людей</h2>
 
       <div className="review-grid">
-        {reviews.map((review) => (
+        {reviews.slice(0, 3).map((review) => (
           <article className="review-card" key={`${review.author}-${review.pet}`}>
-            <Quote size={24} />
+            <span className="review-avatar" aria-hidden="true">
+              🐶
+            </span>
             <p>{review.text}</p>
-            <strong>{review.author}</strong>
-            <span>{review.pet}</span>
+            <strong>
+              {review.author} / {review.pet}
+            </strong>
+            <small>★★★★★</small>
           </article>
         ))}
       </div>

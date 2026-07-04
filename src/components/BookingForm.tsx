@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { CalendarCheck, Send } from 'lucide-react'
 import { petTypeLabels, services } from '../data/content'
 import { sendBookingRequest } from '../lib/bookingApi'
 import type { FormEvent } from 'react'
@@ -60,24 +59,13 @@ export const BookingForm = () => {
   }
 
   return (
-    <section className="section booking-section" id="booking">
-      <div className="booking-copy">
-        <span className="section-kicker">Онлайн-запись</span>
-        <h2>Оставьте заявку, а команда салона подтвердит удобное время</h2>
-        <p>
-          Расскажите немного о питомце и желаемой услуге. Мы уточним детали, подберём мастера и
-          подтвердим визит.
-        </p>
-        <div className="booking-note">
-          <CalendarCheck size={22} />
-          <span>Обычно отвечаем в течение 10-15 минут в рабочее время.</span>
-        </div>
-      </div>
+    <section className="booking-section" id="booking">
+      <h2>Готовы к счастливому дню груминга?</h2>
 
       <form className="booking-form" onSubmit={handleSubmit}>
         <div className="form-grid">
           <label htmlFor="ownerName">
-            Имя владельца
+            <span>Ваше имя</span>
             <input
               id="ownerName"
               required
@@ -87,7 +75,7 @@ export const BookingForm = () => {
             />
           </label>
           <label htmlFor="phone">
-            Телефон
+            <span>Телефон</span>
             <input
               id="phone"
               required
@@ -96,8 +84,8 @@ export const BookingForm = () => {
               placeholder="+7 999 123-45-67"
             />
           </label>
-          <label htmlFor="petName">
-            Имя питомца
+          <label htmlFor="petName" className="full-field">
+            <span>Имя питомца</span>
             <input
               id="petName"
               required
@@ -106,8 +94,8 @@ export const BookingForm = () => {
               placeholder="Молли"
             />
           </label>
-          <label htmlFor="petType">
-            Тип питомца
+          <label htmlFor="petType" className="full-field">
+            <span>Тип питомца</span>
             <select
               id="petType"
               value={form.petType}
@@ -120,8 +108,8 @@ export const BookingForm = () => {
               ))}
             </select>
           </label>
-          <label htmlFor="breed">
-            Порода
+          <label htmlFor="breed" className="full-field">
+            <span>Порода</span>
             <input
               id="breed"
               value={form.breed}
@@ -129,8 +117,8 @@ export const BookingForm = () => {
               placeholder="Шпиц, мейн-кун..."
             />
           </label>
-          <label htmlFor="serviceId">
-            Услуга
+          <label htmlFor="serviceId" className="full-field">
+            <span>Услуга</span>
             <select
               id="serviceId"
               value={form.serviceId}
@@ -143,8 +131,8 @@ export const BookingForm = () => {
               ))}
             </select>
           </label>
-          <label htmlFor="preferredDate">
-            Желаемая дата
+          <label htmlFor="preferredDate" className="full-field">
+            <span>Предпочтительная дата</span>
             <input
               id="preferredDate"
               required
@@ -154,18 +142,17 @@ export const BookingForm = () => {
             />
           </label>
           <label className="full-field" htmlFor="comment">
-            Комментарий
+            <span>Комментарий</span>
             <textarea
               id="comment"
               value={form.comment}
               onChange={(event) => updateField('comment', event.target.value)}
-              placeholder="Расскажите о характере питомца, состоянии шерсти или пожеланиях"
+              placeholder="Особенности характера, шерсти или пожелания"
             />
           </label>
         </div>
 
         <button className="button primary submit-button" type="submit" disabled={isSubmitting}>
-          <Send size={18} />
           {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
         </button>
 

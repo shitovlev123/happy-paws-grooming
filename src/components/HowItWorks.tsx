@@ -1,24 +1,38 @@
 const steps = [
-  'Клиент выбирает услугу',
-  'Заполняет короткую форму',
-  'Мы уточняем детали ухода',
-  'Подтверждаем удобное время',
-  'Питомец приезжает на спокойный уход',
+  {
+    icon: '📅',
+    title: 'Выберите услугу',
+    text: 'Просто и быстро',
+  },
+  {
+    icon: '✍️',
+    title: 'Заполните детали',
+    text: 'О питомце',
+  },
+  {
+    icon: '✅',
+    title: 'Получите подтверждение',
+    text: 'Мы свяжемся с вами',
+  },
+  {
+    icon: '📍',
+    title: 'Посетите салон',
+    text: 'В назначенное время',
+  },
 ]
 
 export const HowItWorks = () => {
   return (
     <section className="section process-section">
-      <div className="section-heading">
-        <span className="section-kicker">Как это работает</span>
-        <h2>Записаться просто: несколько шагов, и визит уже согласован</h2>
-      </div>
+      <h2 className="plain-heading">Как это работает</h2>
 
       <div className="process-line">
         {steps.map((step, index) => (
-          <article className="process-step" key={step}>
-            <span>{String(index + 1).padStart(2, '0')}</span>
-            <p>{step}</p>
+          <article className="process-step" key={step.title}>
+            <span className="step-icon">{step.icon}</span>
+            <strong>{index + 1}</strong>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
           </article>
         ))}
       </div>

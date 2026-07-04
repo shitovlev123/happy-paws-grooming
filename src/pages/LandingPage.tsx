@@ -9,17 +9,21 @@ import { Services } from '../components/Services'
 
 export const LandingPage = () => {
   return (
-    <>
+    <div className="site-frame">
       <Header />
       <main>
         <Hero />
         <Benefits />
         <Services />
         <HowItWorks />
-        <Groomers />
-        <Reviews />
-        <BookingForm />
+        <div className="bottom-showcase">
+          <div className="bottom-content">
+            <Groomers />
+            <Reviews />
+          </div>
+          <BookingForm />
+        </div>
       </main>
-    </>
+    </div>
   )
 }

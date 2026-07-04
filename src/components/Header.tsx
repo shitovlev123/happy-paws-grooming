@@ -1,27 +1,25 @@
-import { CalendarCheck, PawPrint } from 'lucide-react'
+import { PawPrint } from 'lucide-react'
 
 export const Header = () => {
   return (
     <header className="site-header">
       <a className="brand" href="/" aria-label="Happy Paws Grooming">
         <span className="brand-mark">
-          <PawPrint size={22} />
+          <PawPrint size={24} />
         </span>
-        <span>
-          <strong>Happy Paws</strong>
-          <small>Grooming studio</small>
-        </span>
+        <strong>Счастливые Лапки</strong>
       </a>
 
       <nav className="nav-links" aria-label="Основная навигация">
         <a href="#services">Услуги</a>
-        <a href="#benefits">Преимущества</a>
-        <a href="#booking">Запись</a>
+        <a href="#services">Цены</a>
+        <a href="#groomers">О нас</a>
+        <a href="#booking">Контакты</a>
+        <a href="#reviews">Отзывы</a>
       </nav>
 
       <a className="header-action" href="#booking">
-        <CalendarCheck size={18} />
-        Записать
+        Записаться
       </a>
     </header>
   )
