@@ -8,10 +8,14 @@ export const Reviews = () => {
       <div className="review-lead reveal">
         <span>Отзывы</span>
         <h2>Когда питомцу спокойно, это видно сразу</h2>
+        <div className="review-score">
+          <strong>4,8</strong>
+          <p>средняя оценка по 317 отзывам владельцев</p>
+        </div>
       </div>
 
       <div className="review-grid">
-        {reviews.slice(0, 3).map((review, index) => (
+        {reviews.map((review, index) => (
           <article className="review-card reveal" style={{ '--reveal-index': index } as CSSProperties} key={`${review.author}-${review.pet}`}>
             <Quotes size={30} weight="duotone" />
             <p>{review.text}</p>

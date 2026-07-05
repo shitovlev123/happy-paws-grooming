@@ -4,22 +4,22 @@ import type { CSSProperties } from 'react'
 const steps = [
   {
     title: 'Вы выбираете уход',
-    text: 'Один сервис или комплексный визит.',
+    text: 'Один сервис, экспресс-уход или полный груминг.',
     icon: PawPrint,
   },
   {
     title: 'Мы уточняем детали',
-    text: 'Порода, шерсть, характер и пожелания.',
+    text: 'Порода, шерсть, характер питомца и пожелания по образу.',
     icon: ChatCircleText,
   },
   {
-    title: 'Подтверждаем время',
-    text: 'Администратор согласует запись.',
+    title: 'Подбираем время',
+    text: 'Согласуем удобный слот и заранее называем ориентир по цене.',
     icon: Clock,
   },
   {
-    title: 'Питомец приезжает спокойно',
-    text: 'Мастер ведет уход мягко и внимательно.',
+    title: 'Питомец приезжает',
+    text: 'Мастер ведет уход мягко, внимательно и без лишнего шума.',
     icon: CheckCircle,
   },
 ]
@@ -29,7 +29,7 @@ export const HowItWorks = () => {
     <section className="section process-section" id="process">
       <div className="section-intro narrow reveal">
         <span>Как проходит визит</span>
-        <h2>Понятный маршрут без суеты</h2>
+        <h2>Понятный маршрут от записи до чистых лапок</h2>
       </div>
 
       <div className="process-line">

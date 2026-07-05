@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { PaperPlaneTilt } from '@phosphor-icons/react'
+import { Clock, MapPin, PaperPlaneTilt, Phone } from '@phosphor-icons/react'
 import { petTypeLabels, services } from '../data/content'
 import { sendBookingRequest } from '../lib/bookingApi'
 import type { FormEvent } from 'react'
@@ -63,10 +63,25 @@ export const BookingForm = () => {
     <section className="section booking-section" id="booking">
       <div className="booking-copy reveal">
         <span>Онлайн-запись</span>
-        <h2>Расскажите о питомце, остальное возьмем на себя</h2>
+        <h2>Расскажите о питомце, мы бережно подберем уход</h2>
         <p>
-          После отправки заявки администратор уточнит детали ухода и подтвердит удобное время.
+          Оставьте контакты и желаемую дату. Мы уточним детали, подскажем по услуге
+          и подтвердим удобное время.
         </p>
+        <div className="booking-details" aria-label="Контакты салона">
+          <a href="tel:+79253184211">
+            <Phone size={20} weight="duotone" />
+            +7 925 318-42-11
+          </a>
+          <a href="#contacts">
+            <MapPin size={20} weight="duotone" />
+            Москва, ул. Плющиха, 27
+          </a>
+          <span>
+            <Clock size={20} weight="duotone" />
+            Ежедневно 10:00-21:00
+          </span>
+        </div>
       </div>
 
       <form className="booking-form reveal" onSubmit={handleSubmit}>
@@ -86,6 +101,7 @@ export const BookingForm = () => {
             <input
               id="phone"
               required
+              inputMode="tel"
               value={form.phone}
               onChange={(event) => updateField('phone', event.target.value)}
               placeholder="+7 999 123-45-67"
@@ -143,9 +159,9 @@ export const BookingForm = () => {
             <input
               id="preferredDate"
               required
+              type="date"
               value={form.preferredDate}
               onChange={(event) => updateField('preferredDate', event.target.value)}
-              placeholder="10.07.2026"
             />
           </label>
           <label className="full-field" htmlFor="comment">
@@ -160,7 +176,7 @@ export const BookingForm = () => {
         </div>
 
         <button className="button primary submit-button" type="submit" disabled={isSubmitting}>
-          <span>{isSubmitting ? 'Отправляем' : 'Отправить заявку'}</span>
+          <span>{isSubmitting ? 'Отправляем' : 'Записать питомца'}</span>
           <PaperPlaneTilt size={20} weight="duotone" />
         </button>
 

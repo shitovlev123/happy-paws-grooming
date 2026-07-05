@@ -3,21 +3,22 @@ import { PawPrint } from '@phosphor-icons/react'
 export const Header = () => {
   return (
     <header className="site-header">
-      <a className="brand" href="/" aria-label="Happy Paws Grooming">
+      <a className="brand" href="/" aria-label="Счастливые лапки">
         <span className="brand-mark">
           <PawPrint size={24} weight="duotone" />
         </span>
         <span>
-          <strong>Happy Paws</strong>
-          <small>grooming salon</small>
+          <strong>Счастливые лапки</strong>
+          <small>груминг-салон</small>
         </span>
       </a>
 
       <nav className="nav-links" aria-label="Основная навигация">
         <a href="#services">Услуги</a>
-        <a href="#process">Как проходит визит</a>
+        <a href="#process">Визит</a>
         <a href="#groomers">Мастера</a>
         <a href="#reviews">Отзывы</a>
+        <a href="#contacts">Контакты</a>
       </nav>
 
       <a className="header-action" href="#booking">
