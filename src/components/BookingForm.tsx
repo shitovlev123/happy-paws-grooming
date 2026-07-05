@@ -5,6 +5,9 @@ import { sendBookingRequest } from '../lib/bookingApi'
 import type { FormEvent } from 'react'
 import type { PetType } from '../types/booking'
 
+const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:30', '13:00', '14:00', '14:30', '15:00', '16:00', '16:30', '17:30', '18:00', '19:00']
+const busySlots = new Set(['11:30', '15:00', '18:00'])
+
 type FormState = {
   ownerName: string
   phone: string
@@ -34,6 +37,7 @@ export const BookingForm = () => {
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [celebrationKey, setCelebrationKey] = useState(0)
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
 
   const selectedService = useMemo(
     () => services.find((service) => service.id === form.serviceId) ?? services[0],
@@ -44,8 +48,27 @@ export const BookingForm = () => {
     setForm((current) => ({ ...current, [field]: value }))
   }
 
+  const handleDateChange = (value: string) => {
+    setForm((current) => ({ ...current, preferredDate: value, preferredTime: '' }))
+    setIsTimePickerOpen(Boolean(value))
+    setSuccessMessage('')
+  }
+
+  const selectTimeSlot = (slot: string) => {
+    setForm((current) => ({ ...current, preferredTime: slot }))
+    setIsTimePickerOpen(false)
+    setSuccessMessage('')
+  }
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!form.preferredTime) {
+      setSuccessMessage('Выберите свободное время записи.')
+      setIsTimePickerOpen(Boolean(form.preferredDate))
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -55,6 +78,7 @@ export const BookingForm = () => {
       })
       setSuccessMessage('Запись отправлена на выбранные дату и время.')
       setCelebrationKey((current) => current + 1)
+      setIsTimePickerOpen(false)
       setForm(initialForm)
     } catch {
       setSuccessMessage('Не удалось отправить заявку. Проверьте связь и попробуйте еще раз.')
@@ -89,10 +113,10 @@ export const BookingForm = () => {
         <div className="booking-map" aria-label="Карта салона">
           <iframe
             title="Счастливые лапки на карте"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=37.5748%2C55.7323%2C37.5960%2C55.7429&layer=mapnik&marker=55.7376%2C37.5854"
+            src="https://yandex.ru/map-widget/v1/?ll=37.585400%2C55.737600&z=16&pt=37.585400%2C55.737600%2Cpm2rdm"
             loading="lazy"
           />
-          <a href="https://www.openstreetmap.org/?mlat=55.7376&mlon=37.5854#map=16/55.7376/37.5854">
+          <a href="https://yandex.ru/maps/?ll=37.585400%2C55.737600&z=16&pt=37.585400%2C55.737600%2Cpm2rdm">
             Открыть карту
           </a>
         </div>
@@ -175,22 +199,43 @@ export const BookingForm = () => {
               required
               type="date"
               value={form.preferredDate}
-              onChange={(event) => updateField('preferredDate', event.target.value)}
+              onChange={(event) => handleDateChange(event.target.value)}
             />
           </label>
-          <label htmlFor="preferredTime">
+          <div className="time-slot-field">
             Время
-            <input
-              id="preferredTime"
-              required
-              type="time"
-              min="10:00"
-              max="21:00"
-              step="1800"
-              value={form.preferredTime}
-              onChange={(event) => updateField('preferredTime', event.target.value)}
-            />
-          </label>
+            <button
+              className="time-slot-trigger"
+              type="button"
+              disabled={!form.preferredDate}
+              aria-expanded={isTimePickerOpen}
+              onClick={() => setIsTimePickerOpen((current) => !current)}
+            >
+              {form.preferredTime || (form.preferredDate ? 'Выбрать время' : 'Сначала выберите дату')}
+            </button>
+            {isTimePickerOpen && (
+              <div className="time-slot-popover" role="listbox" aria-label="Свободное время">
+                {timeSlots.map((slot) => {
+                  const isBusy = busySlots.has(slot)
+
+                  return (
+                    <button
+                      className={form.preferredTime === slot ? 'is-selected' : ''}
+                      type="button"
+                      disabled={isBusy}
+                      role="option"
+                      aria-selected={form.preferredTime === slot}
+                      onClick={() => selectTimeSlot(slot)}
+                      key={slot}
+                    >
+                      <span>{slot}</span>
+                      {isBusy && <small>занято</small>}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
           <label className="full-field" htmlFor="comment">
             Комментарий
             <textarea

@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { Benefits } from '../components/Benefits'
 import { BookingForm } from '../components/BookingForm'
 import { Footer } from '../components/Footer'
 import { Groomers } from '../components/Groomers'
@@ -38,7 +37,6 @@ export const LandingPage = () => {
       <main id="content">
         <Hero />
         <Marquee />
-        <Benefits />
         <Services />
         <Groomers />
         <Reviews />

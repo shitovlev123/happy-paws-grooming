@@ -1,7 +1,7 @@
 import { groomers } from '../data/content'
 
 export const Groomers = () => {
-  const loopedGroomers = [...groomers, ...groomers]
+  const loopGroups = [0, 1, 2]
 
   return (
     <section className="section groomers-section" id="groomers">
@@ -16,18 +16,22 @@ export const Groomers = () => {
 
       <div className="groomer-marquee" aria-label="Мастера салона">
         <div className="groomer-track">
-          {loopedGroomers.map((groomer, index) => (
-            <article className="groomer-card" aria-hidden={index >= groomers.length} key={`${groomer.name}-${index}`}>
-              <div className="groomer-photo" style={{ background: groomer.tone }}>
-                <span>{groomer.initials}</span>
-              </div>
-              <div className="groomer-body">
-                <h3>{groomer.name}</h3>
-                <strong>{groomer.role}</strong>
-                <span>{groomer.experience}</span>
-                <p>{groomer.description}</p>
-              </div>
-            </article>
+          {loopGroups.map((groupIndex) => (
+            <div className="groomer-loop-group" aria-hidden={groupIndex > 0} key={groupIndex}>
+              {groomers.map((groomer) => (
+                <article className="groomer-card" key={`${groomer.name}-${groupIndex}`}>
+                  <div className="groomer-photo" style={{ background: groomer.tone }}>
+                    <span>{groomer.initials}</span>
+                  </div>
+                  <div className="groomer-body">
+                    <h3>{groomer.name}</h3>
+                    <strong>{groomer.role}</strong>
+                    <span>{groomer.experience}</span>
+                    <p>{groomer.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           ))}
         </div>
       </div>

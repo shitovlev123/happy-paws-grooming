@@ -1,6 +1,9 @@
 import {
   Bathtub,
   Broom,
+  Cat,
+  Dog,
+  Heart,
   Scissors,
   Sparkle,
   SprayBottle,
@@ -57,6 +60,17 @@ export const Services = () => {
             </article>
           )
         })}
+        <article
+          className="service-pet-card reveal"
+          style={{ '--reveal-index': services.length } as CSSProperties}
+          aria-hidden="true"
+        >
+          <div className="service-pet-sketch">
+            <Dog size={184} weight="thin" />
+            <Heart size={56} weight="fill" />
+            <Cat size={126} weight="thin" />
+          </div>
+        </article>
       </div>
     </section>
   )
