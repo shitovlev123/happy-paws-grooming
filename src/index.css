@@ -255,18 +255,27 @@ video {
   top: -28px;
   bottom: auto;
   z-index: -3;
+  opacity: 0.96;
   height: calc(100% + 58px);
   object-fit: cover;
   object-position: center;
   filter: saturate(0.96) contrast(0.98);
   transform: scale(1.04);
+  transition:
+    opacity 560ms var(--ease),
+    filter 560ms var(--ease);
+}
+
+.hero-video.is-soft-looping {
+  opacity: 0.78;
+  filter: saturate(0.88) contrast(0.94) brightness(1.05) blur(0.8px);
 }
 
 .hero-overlay {
   z-index: -2;
   background:
     linear-gradient(90deg, rgba(255, 253, 248, 0.96) 0%, rgba(255, 253, 248, 0.86) 38%, rgba(255, 253, 248, 0.18) 74%),
-    linear-gradient(180deg, rgba(247, 247, 244, 0.18) 0%, rgba(247, 247, 244, 0.72) 100%);
+    linear-gradient(180deg, rgba(247, 247, 244, 0.08) 0%, rgba(247, 247, 244, 0.28) 64%, rgba(247, 247, 244, 0.96) 100%);
 }
 
 .hero-inner {
@@ -786,15 +795,29 @@ video {
   font-weight: 800;
 }
 
-.groomer-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.groomer-marquee {
+  position: relative;
+  overflow: hidden;
+  margin-inline: calc((100vw - min(1200px, calc(100vw - 32px))) / -2);
+  padding: 4px calc((100vw - min(1200px, calc(100vw - 32px))) / 2);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.groomer-track {
+  display: flex;
+  width: max-content;
   gap: 16px;
+  animation: groomers-marquee 38s linear infinite;
+}
+
+.groomer-marquee:hover .groomer-track {
+  animation-play-state: paused;
 }
 
 .groomer-card {
   display: grid;
   grid-template-columns: 0.86fr 1.14fr;
+  flex: 0 0 390px;
   gap: 18px;
   min-height: 290px;
   border: 1px solid var(--line);
@@ -889,27 +912,37 @@ video {
   line-height: 1;
 }
 
-.review-grid {
+.review-stream {
+  position: relative;
+  height: 620px;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent);
+}
+
+.review-track {
   display: grid;
-  gap: 18px;
+  gap: 16px;
+  animation: reviews-marquee 42s linear infinite;
+}
+
+.review-stream:hover .review-track {
+  animation-play-state: paused;
 }
 
 .review-card {
-  border-bottom: 1px solid var(--line);
-  padding: 0 0 34px;
-}
-
-.review-card + .review-card {
-  padding-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  background: rgba(255, 253, 248, 0.82);
 }
 
 .review-card p {
   max-width: 650px;
-  margin: 22px 0;
+  margin: 18px 0 20px;
   color: var(--ink);
-  font-size: 1.55rem;
+  font-size: 1.24rem;
   letter-spacing: 0;
-  line-height: 1.28;
+  line-height: 1.42;
 }
 
 .review-card strong {
@@ -1110,6 +1143,26 @@ textarea:focus {
   }
 }
 
+@keyframes groomers-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 8px));
+  }
+}
+
+@keyframes reviews-marquee {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(calc(-50% - 8px));
+  }
+}
+
 @keyframes heart-breathe {
   0%,
   100% {
@@ -1193,10 +1246,6 @@ textarea:focus {
   .featured-service {
     grid-row: span 1;
     min-height: 370px;
-  }
-
-  .groomer-grid {
-    grid-template-columns: 1fr;
   }
 
   .review-lead,
@@ -1287,6 +1336,19 @@ textarea:focus {
     min-height: 74px;
     padding: 0 28px;
     font-size: 1.55rem;
+  }
+
+  .groomer-marquee {
+    margin-inline: -14px;
+    padding-inline: 14px;
+  }
+
+  .groomer-card {
+    flex-basis: 330px;
+  }
+
+  .review-stream {
+    height: 560px;
   }
 
   .promise-section,
