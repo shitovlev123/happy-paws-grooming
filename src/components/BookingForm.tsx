@@ -13,6 +13,7 @@ type FormState = {
   breed: string
   serviceId: string
   preferredDate: string
+  preferredTime: string
   comment: string
 }
 
@@ -24,6 +25,7 @@ const initialForm: FormState = {
   breed: '',
   serviceId: services[0].id,
   preferredDate: '',
+  preferredTime: '',
   comment: '',
 }
 
@@ -31,6 +33,7 @@ export const BookingForm = () => {
   const [form, setForm] = useState<FormState>(initialForm)
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [celebrationKey, setCelebrationKey] = useState(0)
 
   const selectedService = useMemo(
     () => services.find((service) => service.id === form.serviceId) ?? services[0],
@@ -50,7 +53,8 @@ export const BookingForm = () => {
         ...form,
         serviceName: selectedService.title,
       })
-      setSuccessMessage('Заявка отправлена. Мы свяжемся с вами для подтверждения времени.')
+      setSuccessMessage('Запись отправлена на выбранные дату и время.')
+      setCelebrationKey((current) => current + 1)
       setForm(initialForm)
     } catch {
       setSuccessMessage('Не удалось отправить заявку. Проверьте связь и попробуйте еще раз.')
@@ -65,8 +69,8 @@ export const BookingForm = () => {
         <span>Онлайн-запись</span>
         <h2>Расскажите о питомце, мы бережно подберем уход</h2>
         <p>
-          Оставьте контакты и желаемую дату. Мы уточним детали, подскажем по услуге
-          и подтвердим удобное время.
+          Выберите услугу, дату и время. Заявка сразу уйдет в салон, а администратор
+          увидит все детали записи.
         </p>
         <div className="booking-details" aria-label="Контакты салона">
           <a href="tel:+79253184211">
@@ -81,6 +85,16 @@ export const BookingForm = () => {
             <Clock size={20} weight="duotone" />
             Ежедневно 10:00-21:00
           </span>
+        </div>
+        <div className="booking-map" aria-label="Карта салона">
+          <iframe
+            title="Счастливые лапки на карте"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=37.5748%2C55.7323%2C37.5960%2C55.7429&layer=mapnik&marker=55.7376%2C37.5854"
+            loading="lazy"
+          />
+          <a href="https://www.openstreetmap.org/?mlat=55.7376&mlon=37.5854#map=16/55.7376/37.5854">
+            Открыть карту
+          </a>
         </div>
       </div>
 
@@ -155,13 +169,26 @@ export const BookingForm = () => {
             </select>
           </label>
           <label htmlFor="preferredDate">
-            Желаемая дата
+            Дата
             <input
               id="preferredDate"
               required
               type="date"
               value={form.preferredDate}
               onChange={(event) => updateField('preferredDate', event.target.value)}
+            />
+          </label>
+          <label htmlFor="preferredTime">
+            Время
+            <input
+              id="preferredTime"
+              required
+              type="time"
+              min="10:00"
+              max="21:00"
+              step="1800"
+              value={form.preferredTime}
+              onChange={(event) => updateField('preferredTime', event.target.value)}
             />
           </label>
           <label className="full-field" htmlFor="comment">
@@ -175,10 +202,19 @@ export const BookingForm = () => {
           </label>
         </div>
 
-        <button className="button primary submit-button" type="submit" disabled={isSubmitting}>
-          <span>{isSubmitting ? 'Отправляем' : 'Записать питомца'}</span>
-          <PaperPlaneTilt size={20} weight="duotone" />
-        </button>
+        <div className="submit-wrap">
+          <button className="button primary submit-button" type="submit" disabled={isSubmitting}>
+            <span>{isSubmitting ? 'Отправляем' : 'Записать питомца'}</span>
+            <PaperPlaneTilt size={20} weight="duotone" />
+          </button>
+          {celebrationKey > 0 && (
+            <span className="success-burst" aria-hidden="true" key={celebrationKey}>
+              {Array.from({ length: 10 }, (_, index) => (
+                <span key={index} />
+              ))}
+            </span>
+          )}
+        </div>
 
         {successMessage && <p className="form-success">{successMessage}</p>}
       </form>

@@ -15,7 +15,6 @@ export const Header = () => {
 
       <nav className="nav-links" aria-label="Основная навигация">
         <a href="#services">Услуги</a>
-        <a href="#process">Визит</a>
         <a href="#groomers">Мастера</a>
         <a href="#reviews">Отзывы</a>
         <a href="#contacts">Контакты</a>

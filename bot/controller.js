@@ -95,7 +95,7 @@ export const handleTelegramMessage = async (message) => {
   }
 
   if (text.startsWith('/start')) {
-    await sendTelegramMessage(chatId, 'Бот Happy Paws активен.', { reply_markup: mainKeyboard })
+    await sendTelegramMessage(chatId, 'Бот Счастливые лапки активен.', { reply_markup: mainKeyboard })
 
     if (await isAdmin(userId)) {
       await sendAdminPanel(chatId)

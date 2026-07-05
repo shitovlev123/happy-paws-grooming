@@ -3,7 +3,7 @@ import { getAdmins, saveBooking } from '../bot/state.js'
 import { sendTelegramMessage } from '../bot/telegram-api.js'
 import { handleTelegramUpdate } from '../bot/controller.js'
 
-const requiredFields = ['ownerName', 'phone', 'petName', 'petType', 'serviceName', 'preferredDate']
+const requiredFields = ['ownerName', 'phone', 'petName', 'petType', 'serviceName', 'preferredDate', 'preferredTime']
 
 const handleBooking = async (booking) => {
   if (!booking || requiredFields.some((field) => !booking[field])) {

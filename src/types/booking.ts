@@ -9,6 +9,7 @@ export type BookingRequest = {
   serviceId: string
   serviceName: string
   preferredDate: string
+  preferredTime: string
   comment: string
 }
 

@@ -3,7 +3,7 @@ import { handleTelegramUpdate } from './controller.js'
 
 let offset = 0
 
-console.log('Happy Paws bot polling started')
+console.log('Счастливые лапки bot polling started')
 
 while (true) {
   const updates = await getUpdates(offset)

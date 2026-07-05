@@ -21,7 +21,8 @@ export const formatBookingMessage = (booking) =>
     `Порода: ${booking.breed || 'не указана'}`,
     `Услуга: ${booking.serviceName}`,
     `Дата: ${booking.preferredDate}`,
-    `Комментарий: ${booking.comment || 'без комментария'}`,
+    `Время: ${booking.preferredTime || 'не указано'}`,
+    `Комментарий: ${booking.comment || 'нет комментария'}`,
   ].join('\n')
 
 export const bookingKeyboard = (bookingId) => ({
@@ -48,7 +49,7 @@ export const adminPanelKeyboard = {
 }
 
 export const adminPanelText = [
-  'Админ-панель Happy Paws',
+  'Админ-панель Счастливые лапки',
   'Здесь приходят новые заявки с сайта.',
   'Вы можете подтверждать, выполнять или отменять заявки кнопками под сообщением.',
 ].join('\n')
