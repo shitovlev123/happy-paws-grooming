@@ -1,4 +1,4 @@
-import { Quotes } from '@phosphor-icons/react'
+import { Quotes, Star } from '@phosphor-icons/react'
 import { reviews } from '../data/content'
 
 export const Reviews = () => {
@@ -23,7 +23,12 @@ export const Reviews = () => {
               aria-hidden={index >= reviews.length}
               key={`${review.author}-${review.pet}-${index}`}
             >
-              <Quotes size={30} weight="duotone" />
+              <div className="review-stars" aria-label="Оценка 5 из 5">
+                {Array.from({ length: 5 }, (_, starIndex) => (
+                  <Star size={18} weight="fill" key={starIndex} />
+                ))}
+              </div>
+              <Quotes className="review-quote" size={30} weight="duotone" />
               <p>{review.text}</p>
               <strong>{review.author}</strong>
               <span>{review.pet}</span>

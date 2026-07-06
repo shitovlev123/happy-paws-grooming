@@ -225,7 +225,6 @@ video {
 
 .header-action:active,
 .button:active,
-.service-footer a:active,
 .footer-socials a:active {
   transform: translateY(1px) scale(0.98);
 }
@@ -510,15 +509,22 @@ video {
   border-radius: var(--radius);
   padding: 24px;
   background: rgba(255, 253, 248, 0.82);
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
   transition:
     transform 360ms var(--ease),
+    border-color 360ms var(--ease),
     background 360ms var(--ease),
     box-shadow 360ms var(--ease);
 }
 
-.service-card:hover {
+.service-card:hover,
+.service-card:focus-visible {
+  border-color: rgba(232, 95, 67, 0.28);
   background: var(--paper);
   box-shadow: var(--shadow);
+  outline: 0;
   transform: translateY(-6px);
 }
 
@@ -575,26 +581,19 @@ video {
   font-weight: 800;
 }
 
-.service-footer a {
-  display: inline-flex;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  padding: 0 16px;
-  background: var(--ink);
-  color: #fffdf8;
+.service-card-hint {
+  color: var(--accent);
   font-size: 0.92rem;
-  font-weight: 760;
-  white-space: nowrap;
+  font-weight: 780;
   transition:
-    transform 240ms var(--ease),
-    background 240ms var(--ease);
+    color 240ms var(--ease),
+    transform 240ms var(--ease);
 }
 
-.service-footer a:hover {
-  background: var(--accent);
-  transform: translateY(-1px);
+.service-card:hover .service-card-hint,
+.service-card:focus-visible .service-card-hint {
+  color: var(--ink);
+  transform: translateX(4px);
 }
 
 .service-pet-card {
@@ -668,7 +667,8 @@ video {
 .groomer-track {
   display: flex;
   width: max-content;
-  animation: groomers-marquee 66s linear infinite;
+  animation: groomers-marquee 92s linear infinite;
+  will-change: transform;
 }
 
 .groomer-loop-group {
@@ -694,10 +694,9 @@ video {
   position: relative;
   display: grid;
   min-height: 256px;
-  place-items: end start;
+  place-items: center;
   overflow: hidden;
   border-radius: var(--radius);
-  padding: 18px;
 }
 
 .groomer-photo::before {
@@ -708,18 +707,18 @@ video {
   content: "";
 }
 
-.groomer-photo span {
-  position: relative;
-  display: grid;
-  width: 76px;
-  height: 76px;
-  place-items: center;
-  border: 1px solid rgba(255, 253, 248, 0.86);
-  border-radius: var(--radius);
-  background: rgba(255, 253, 248, 0.58);
-  color: rgba(32, 32, 30, 0.62);
-  font-size: 2rem;
-  font-weight: 840;
+.groomer-avatar {
+  width: 100%;
+  height: 100%;
+  min-height: 256px;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.02);
+  transition: transform 520ms var(--ease);
+}
+
+.groomer-card:hover .groomer-avatar {
+  transform: scale(1.06);
 }
 
 .groomer-body {
@@ -796,9 +795,19 @@ video {
   background: rgba(255, 253, 248, 0.82);
 }
 
+.review-stars {
+  display: flex;
+  gap: 4px;
+  color: var(--accent);
+}
+
+.review-quote {
+  margin-top: 14px;
+}
+
 .review-card p {
   max-width: 650px;
-  margin: 18px 0 20px;
+  margin: 14px 0 20px;
   color: var(--ink);
   font-size: 1.24rem;
   letter-spacing: 0;
@@ -1231,11 +1240,11 @@ textarea:focus {
 
 @keyframes groomers-marquee {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translateX(-33.333%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -1501,6 +1510,10 @@ textarea:focus {
   }
 
   .groomer-photo {
+    min-height: 210px;
+  }
+
+  .groomer-avatar {
     min-height: 210px;
   }
 

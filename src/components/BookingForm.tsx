@@ -1,12 +1,66 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Clock, MapPin, PaperPlaneTilt, Phone } from '@phosphor-icons/react'
 import { petTypeLabels, services } from '../data/content'
 import { sendBookingRequest } from '../lib/bookingApi'
-import type { FormEvent } from 'react'
+import { serviceSelectionEventName } from '../lib/serviceSelection'
+import type { FormEvent, KeyboardEvent } from 'react'
+import type { ServiceSelectionDetail } from '../lib/serviceSelection'
 import type { PetType } from '../types/booking'
 
-const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:30', '13:00', '14:00', '14:30', '15:00', '16:00', '16:30', '17:30', '18:00', '19:00']
+const timeSlots = [
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:30',
+  '13:00',
+  '14:00',
+  '14:30',
+  '15:00',
+  '16:00',
+  '16:30',
+  '17:30',
+  '18:00',
+  '19:00',
+]
 const busySlots = new Set(['11:30', '15:00', '18:00'])
+const phoneControlKeys = new Set(['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'])
+
+const formatPhone = (value: string) => {
+  const digits = value.replace(/\D/g, '')
+
+  if (!digits) {
+    return ''
+  }
+
+  const normalized = digits.startsWith('8') ? `7${digits.slice(1)}` : digits.startsWith('7') ? digits : `7${digits}`
+  const phone = normalized.slice(0, 11)
+  const code = phone.slice(1, 4)
+  const first = phone.slice(4, 7)
+  const second = phone.slice(7, 9)
+  const third = phone.slice(9, 11)
+  const parts = ['+7']
+
+  if (code) {
+    parts.push(code)
+  }
+
+  if (first) {
+    parts.push(first)
+  }
+
+  let formatted = parts.join(' ')
+
+  if (second) {
+    formatted += `-${second}`
+  }
+
+  if (third) {
+    formatted += `-${third}`
+  }
+
+  return formatted
+}
 
 type FormState = {
   ownerName: string
@@ -48,6 +102,37 @@ export const BookingForm = () => {
     setForm((current) => ({ ...current, [field]: value }))
   }
 
+  useEffect(() => {
+    const handleServiceSelection = (event: Event) => {
+      const serviceId = (event as CustomEvent<ServiceSelectionDetail>).detail?.serviceId
+
+      if (!serviceId || !services.some((service) => service.id === serviceId)) {
+        return
+      }
+
+      setForm((current) => ({ ...current, serviceId }))
+      setSuccessMessage('')
+    }
+
+    window.addEventListener(serviceSelectionEventName, handleServiceSelection)
+
+    return () => {
+      window.removeEventListener(serviceSelectionEventName, handleServiceSelection)
+    }
+  }, [])
+
+  const handlePhoneKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.ctrlKey || event.metaKey || phoneControlKeys.has(event.key) || /^\d$/.test(event.key)) {
+      return
+    }
+
+    event.preventDefault()
+  }
+
+  const handlePhoneChange = (value: string) => {
+    updateField('phone', formatPhone(value))
+  }
+
   const handleDateChange = (value: string) => {
     setForm((current) => ({ ...current, preferredDate: value, preferredTime: '' }))
     setIsTimePickerOpen(Boolean(value))
@@ -63,6 +148,11 @@ export const BookingForm = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    if (form.phone.replace(/\D/g, '').length !== 11) {
+      setSuccessMessage('Введите номер телефона полностью.')
+      return
+    }
+
     if (!form.preferredTime) {
       setSuccessMessage('Выберите свободное время записи.')
       setIsTimePickerOpen(Boolean(form.preferredDate))
@@ -76,7 +166,7 @@ export const BookingForm = () => {
         ...form,
         serviceName: selectedService.title,
       })
-      setSuccessMessage('Запись отправлена на выбранные дату и время.')
+      setSuccessMessage('Запись зарегистрирована. Спасибо!')
       setCelebrationKey((current) => current + 1)
       setIsTimePickerOpen(false)
       setForm(initialForm)
@@ -139,9 +229,12 @@ export const BookingForm = () => {
             <input
               id="phone"
               required
+              type="tel"
               inputMode="tel"
+              autoComplete="tel"
               value={form.phone}
-              onChange={(event) => updateField('phone', event.target.value)}
+              onKeyDown={handlePhoneKeyDown}
+              onChange={(event) => handlePhoneChange(event.target.value)}
               placeholder="+7 999 123-45-67"
             />
           </label>

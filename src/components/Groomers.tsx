@@ -1,7 +1,7 @@
 import { groomers } from '../data/content'
 
 export const Groomers = () => {
-  const loopGroups = [0, 1, 2]
+  const loopGroups = [0, 1, 2, 3]
 
   return (
     <section className="section groomers-section" id="groomers">
@@ -21,7 +21,7 @@ export const Groomers = () => {
               {groomers.map((groomer) => (
                 <article className="groomer-card" key={`${groomer.name}-${groupIndex}`}>
                   <div className="groomer-photo" style={{ background: groomer.tone }}>
-                    <span>{groomer.initials}</span>
+                    <img className="groomer-avatar" src={groomer.avatar} alt="" decoding="async" />
                   </div>
                   <div className="groomer-body">
                     <h3>{groomer.name}</h3>

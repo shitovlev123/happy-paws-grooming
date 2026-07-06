@@ -27,8 +27,8 @@ export type Groomer = {
   role: string
   experience: string
   description: string
-  initials: string
   tone: string
+  avatar: string
 }
 
 export type Review = {

@@ -10,6 +10,7 @@ import {
   WaveSawtooth,
 } from '@phosphor-icons/react'
 import { services } from '../data/content'
+import { emitServiceSelection } from '../lib/serviceSelection'
 import type { ComponentType, CSSProperties } from 'react'
 
 const serviceIcons: Record<string, ComponentType<{ size?: number; weight?: 'regular' | 'duotone' }>> = {
@@ -27,10 +28,6 @@ export const Services = () => {
       <div className="section-intro reveal">
         <span>Услуги</span>
         <h2>Уход под шерсть, характер и настроение питомца</h2>
-        <p>
-          Можно выбрать быстрый визит или полный ритуал. В каждой услуге важны спокойствие,
-          чистота, понятная цена и результат, который видно сразу.
-        </p>
       </div>
 
       <div className="service-grid">
@@ -38,9 +35,12 @@ export const Services = () => {
           const Icon = serviceIcons[service.id] ?? Sparkle
 
           return (
-            <article
+            <a
               className={`service-card reveal ${index === 0 ? 'featured-service' : ''}`}
+              href="#booking"
+              onClick={() => emitServiceSelection(service.id)}
               style={{ '--reveal-index': index } as CSSProperties}
+              aria-label={`Выбрать услугу ${service.title}`}
               key={service.id}
             >
               <div className="service-card-top">
@@ -55,9 +55,9 @@ export const Services = () => {
               </div>
               <div className="service-footer">
                 <strong>{service.price}</strong>
-                <a href="#booking">Записаться</a>
+                <span className="service-card-hint">Выбрать услугу</span>
               </div>
-            </article>
+            </a>
           )
         })}
         <article
