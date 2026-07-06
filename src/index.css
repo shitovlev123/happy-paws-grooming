@@ -658,6 +658,7 @@ video {
 
 .groomer-marquee {
   position: relative;
+  display: flex;
   overflow: hidden;
   margin-inline: calc((100vw - min(1200px, calc(100vw - 32px))) / -2);
   padding: 4px calc((100vw - min(1200px, calc(100vw - 32px))) / 2);
@@ -666,16 +667,12 @@ video {
 
 .groomer-track {
   display: flex;
+  flex: 0 0 max-content;
+  gap: 16px;
+  padding-right: 16px;
   width: max-content;
   animation: groomers-marquee 92s linear infinite;
   will-change: transform;
-}
-
-.groomer-loop-group {
-  display: flex;
-  flex: 0 0 auto;
-  gap: 16px;
-  padding-right: 16px;
 }
 
 .groomer-card {
@@ -1244,7 +1241,7 @@ textarea:focus {
   }
 
   to {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 

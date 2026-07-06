@@ -1,7 +1,8 @@
 import { groomers } from '../data/content'
 
 export const Groomers = () => {
-  const loopGroups = [0, 1, 2, 3]
+  const tracks = [0, 1]
+  const marqueeGroomers = [...groomers, ...groomers]
 
   return (
     <section className="section groomers-section" id="groomers">
@@ -15,25 +16,23 @@ export const Groomers = () => {
       </div>
 
       <div className="groomer-marquee" aria-label="Мастера салона">
-        <div className="groomer-track">
-          {loopGroups.map((groupIndex) => (
-            <div className="groomer-loop-group" aria-hidden={groupIndex > 0} key={groupIndex}>
-              {groomers.map((groomer) => (
-                <article className="groomer-card" key={`${groomer.name}-${groupIndex}`}>
-                  <div className="groomer-photo" style={{ background: groomer.tone }}>
-                    <img className="groomer-avatar" src={groomer.avatar} alt="" decoding="async" />
-                  </div>
-                  <div className="groomer-body">
-                    <h3>{groomer.name}</h3>
-                    <strong>{groomer.role}</strong>
-                    <span>{groomer.experience}</span>
-                    <p>{groomer.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ))}
-        </div>
+        {tracks.map((trackIndex) => (
+          <div className="groomer-track" aria-hidden={trackIndex > 0} key={trackIndex}>
+            {marqueeGroomers.map((groomer, groomerIndex) => (
+              <article className="groomer-card" key={`${groomer.name}-${trackIndex}-${groomerIndex}`}>
+                <div className="groomer-photo" style={{ background: groomer.tone }}>
+                  <img className="groomer-avatar" src={groomer.avatar} alt="" decoding="async" />
+                </div>
+                <div className="groomer-body">
+                  <h3>{groomer.name}</h3>
+                  <strong>{groomer.role}</strong>
+                  <span>{groomer.experience}</span>
+                  <p>{groomer.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ))}
       </div>
     </section>
   )
