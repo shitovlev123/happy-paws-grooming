@@ -1,10 +1,9 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 
 const vercelStateNamespace = (
   process.env.BOT_STATE_NAMESPACE ||
-  process.env.VERCEL_GIT_COMMIT_SHA ||
-  process.env.VERCEL_URL ||
+  process.env.VERCEL_PROJECT_ID ||
   'vercel'
 )
   .replace(/[^a-zA-Z0-9_-]/g, '_')
@@ -16,6 +15,7 @@ const DEFAULT_STATE_FILE =
     : join(process.cwd(), 'bot', 'data', 'state.json')
 
 const STATE_FILE = process.env.BOT_STATE_FILE || DEFAULT_STATE_FILE
+const STATE_PREFIX = 'happy-paws-bot-state-'
 
 const emptyState = {
   ownerId: null,
@@ -30,7 +30,26 @@ const envAdmins = () =>
   (process.env.TELEGRAM_ADMIN_IDS || '')
     .split(',')
     .map((id) => id.trim())
-    .filter(Boolean)
+  .filter(Boolean)
+
+const mergeState = (current, incoming) => {
+  if (!incoming) {
+    return current
+  }
+
+  return {
+    ...current,
+    ownerId: current.ownerId || incoming.ownerId || null,
+    admins: Array.from(new Set([...(current.admins || []), ...(incoming.admins || [])])),
+    pendingAdminGrants: {
+      ...(incoming.pendingAdminGrants || {}),
+      ...(current.pendingAdminGrants || {}),
+    },
+    bookings: [...(current.bookings || []), ...(incoming.bookings || [])]
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      .slice(0, 200),
+  }
+}
 
 const mergeEnvAdmins = (state) => {
   const admins = envAdmins()
@@ -46,13 +65,40 @@ const mergeEnvAdmins = (state) => {
   }
 }
 
-export const readState = async () => {
+const readStateFile = async (file) => {
   try {
-    const raw = await readFile(STATE_FILE, 'utf8')
-    return mergeEnvAdmins({ ...emptyState, ...JSON.parse(raw) })
+    return { ...emptyState, ...JSON.parse(await readFile(file, 'utf8')) }
   } catch {
-    return mergeEnvAdmins({ ...emptyState })
+    return null
   }
+}
+
+const readLegacyVercelState = async () => {
+  if (process.env.VERCEL !== '1' || !STATE_FILE.startsWith('/tmp/')) {
+    return null
+  }
+
+  try {
+    const files = await readdir('/tmp')
+    const stateFiles = files
+      .filter((file) => file.startsWith(STATE_PREFIX) && join('/tmp', file) !== STATE_FILE)
+      .map((file) => join('/tmp', file))
+
+    const states = await Promise.all(stateFiles.map((file) => readStateFile(file)))
+    return states.reduce((state, incoming) => mergeState(state, incoming), { ...emptyState })
+  } catch {
+    return null
+  }
+}
+
+export const readState = async () => {
+  const state = await readStateFile(STATE_FILE)
+
+  if (state) {
+    return mergeEnvAdmins(state)
+  }
+
+  return mergeEnvAdmins((await readLegacyVercelState()) || { ...emptyState })
 }
 
 export const writeState = async (state) => {
