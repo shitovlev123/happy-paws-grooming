@@ -657,8 +657,10 @@ video {
 }
 
 .groomer-marquee {
+  --groomer-card-width: 390px;
+  --groomer-gap: 16px;
+  --groomer-shift: -2436px;
   position: relative;
-  display: flex;
   overflow: hidden;
   margin-inline: calc((100vw - min(1200px, calc(100vw - 32px))) / -2);
   padding: 4px calc((100vw - min(1200px, calc(100vw - 32px))) / 2);
@@ -667,18 +669,16 @@ video {
 
 .groomer-track {
   display: flex;
-  flex: 0 0 max-content;
   gap: 16px;
-  padding-right: 16px;
   width: max-content;
-  animation: groomers-marquee 92s linear infinite;
+  animation: groomers-marquee 46s linear infinite;
   will-change: transform;
 }
 
 .groomer-card {
   display: grid;
   grid-template-columns: 0.86fr 1.14fr;
-  flex: 0 0 390px;
+  flex: 0 0 var(--groomer-card-width);
   gap: 18px;
   min-height: 290px;
   border: 1px solid var(--line);
@@ -1241,7 +1241,7 @@ textarea:focus {
   }
 
   to {
-    transform: translate3d(-100%, 0, 0);
+    transform: translate3d(var(--groomer-shift), 0, 0);
   }
 }
 
@@ -1436,6 +1436,8 @@ textarea:focus {
   }
 
   .groomer-marquee {
+    --groomer-card-width: 330px;
+    --groomer-shift: -2076px;
     margin-inline: -14px;
     padding-inline: 14px;
   }

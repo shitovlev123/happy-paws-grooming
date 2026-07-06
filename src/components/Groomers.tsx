@@ -1,8 +1,8 @@
+import { Fragment } from 'react'
 import { groomers } from '../data/content'
 
 export const Groomers = () => {
-  const tracks = [0, 1]
-  const marqueeGroomers = [...groomers, ...groomers]
+  const loopGroups = Array.from({ length: 8 }, (_, index) => index)
 
   return (
     <section className="section groomers-section" id="groomers">
@@ -16,23 +16,29 @@ export const Groomers = () => {
       </div>
 
       <div className="groomer-marquee" aria-label="Мастера салона">
-        {tracks.map((trackIndex) => (
-          <div className="groomer-track" aria-hidden={trackIndex > 0} key={trackIndex}>
-            {marqueeGroomers.map((groomer, groomerIndex) => (
-              <article className="groomer-card" key={`${groomer.name}-${trackIndex}-${groomerIndex}`}>
-                <div className="groomer-photo" style={{ background: groomer.tone }}>
-                  <img className="groomer-avatar" src={groomer.avatar} alt="" decoding="async" />
-                </div>
-                <div className="groomer-body">
-                  <h3>{groomer.name}</h3>
-                  <strong>{groomer.role}</strong>
-                  <span>{groomer.experience}</span>
-                  <p>{groomer.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        ))}
+        <div className="groomer-track">
+          {loopGroups.map((groupIndex) => (
+            <Fragment key={groupIndex}>
+              {groomers.map((groomer) => (
+                <article
+                  className="groomer-card"
+                  aria-hidden={groupIndex > 0}
+                  key={`${groomer.name}-${groupIndex}`}
+                >
+                  <div className="groomer-photo" style={{ background: groomer.tone }}>
+                    <img className="groomer-avatar" src={groomer.avatar} alt="" decoding="async" />
+                  </div>
+                  <div className="groomer-body">
+                    <h3>{groomer.name}</h3>
+                    <strong>{groomer.role}</strong>
+                    <span>{groomer.experience}</span>
+                    <p>{groomer.description}</p>
+                  </div>
+                </article>
+              ))}
+            </Fragment>
+          ))}
+        </div>
       </div>
     </section>
   )
