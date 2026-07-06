@@ -66,6 +66,8 @@ TELEGRAM_ADMIN_IDS=123456789
 BOT_STATE_FILE=bot/data/state.json
 ```
 
+Для Vercel обязательно задайте `TELEGRAM_BOT_TOKEN` и `TELEGRAM_ADMIN_IDS` в Environment Variables. Serverless-состояние в `/tmp` может сбрасываться после деплоя, поэтому постоянный список администраторов должен приходить из env.
+
 Локальный polling-запуск бота:
 
 ```bash

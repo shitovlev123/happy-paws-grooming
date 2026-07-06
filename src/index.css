@@ -278,6 +278,13 @@ video {
   max-width: 760px;
 }
 
+.hero-word-lock {
+  display: inline-grid;
+  justify-items: center;
+  max-width: 100%;
+  text-align: center;
+}
+
 .hero-note,
 .section-intro span,
 .booking-copy > span,
@@ -303,8 +310,14 @@ video {
 }
 
 .hero-copy h1 {
+  display: grid;
+  justify-items: center;
   max-width: 680px;
   font-size: 7rem;
+}
+
+.hero-copy h1 span {
+  display: block;
 }
 
 .hero-copy p:not(.hero-note) {
@@ -320,8 +333,8 @@ video {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  justify-content: flex-start;
-  max-width: 570px;
+  justify-content: center;
+  max-width: 100%;
   margin-top: 34px;
 }
 

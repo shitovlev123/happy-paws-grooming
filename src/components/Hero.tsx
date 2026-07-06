@@ -9,12 +9,17 @@ export const Hero = () => {
       <div className="hero-overlay" />
       <div className="hero-inner">
         <div className="hero-copy reveal">
-          <p className="hero-note">Салон для собак и кошек в Хамовниках</p>
-          <h1 id="hero-title">Счастливые лапки</h1>
-          <div className="hero-actions">
-            <a className="button primary" href="#booking">
-              Записать питомца
-            </a>
+          <div className="hero-word-lock">
+            <p className="hero-note">Салон для собак и кошек в Хамовниках</p>
+            <h1 id="hero-title">
+              <span>Счастливые</span>
+              <span>лапки</span>
+            </h1>
+            <div className="hero-actions">
+              <a className="button primary" href="#booking">
+                Записать питомца
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -8,10 +8,14 @@ export const sendBookingRequest = async (booking: BookingRequest) => {
     },
     body: JSON.stringify({ booking }),
   })
+  const data = (await response.json().catch(() => ({
+    ok: false,
+    error: 'Booking request failed',
+  }))) as { ok: boolean; bookingId?: string; notifiedAdmins?: number; error?: string }
 
-  if (!response.ok) {
-    throw new Error('Booking request failed')
+  if (!response.ok || !data.ok) {
+    throw new Error(data.error || 'Booking request failed')
   }
 
-  return response.json() as Promise<{ ok: boolean; bookingId?: string; notifiedAdmins?: number }>
+  return data
 }
