@@ -11,7 +11,6 @@ export const Hero = () => {
         <div className="hero-copy reveal">
           <p className="hero-note">Салон для собак и кошек в Хамовниках</p>
           <h1 id="hero-title">Счастливые лапки</h1>
-          <p>Аккуратный груминг в светлой студии рядом с домом.</p>
           <div className="hero-actions">
             <a className="button primary" href="#booking">
               Записать питомца

@@ -73,8 +73,8 @@ export const groomers: Groomer[] = [
     role: 'Первый груминг щенков',
     experience: '4 года опыта',
     description: 'Помогает щенкам привыкнуть к инструментам, воде и фену в комфортном темпе.',
-    tone: 'linear-gradient(145deg, #f7d88f, #fff5ea)',
-    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=Lera&backgroundColor=f8e5b0',
+    tone: 'linear-gradient(145deg, #cde6ef, #fff8ea)',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=Roma&backgroundColor=d8edf4',
   },
   {
     name: 'Марк',
@@ -97,8 +97,8 @@ export const groomers: Groomer[] = [
     role: 'Вычесывание и сезонная линька',
     experience: '6 лет опыта',
     description: 'Помогает пережить сезонную линьку и объясняет, как ухаживать за шерстью между визитами.',
-    tone: 'linear-gradient(145deg, #cde6ef, #fff8ea)',
-    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=Roma&backgroundColor=d8edf4',
+    tone: 'linear-gradient(145deg, #f7d88f, #fff5ea)',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=Lera&backgroundColor=f8e5b0',
   },
 ]
 
