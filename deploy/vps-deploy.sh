@@ -47,6 +47,13 @@ if [ "${CODEX_AGENT_ENABLED:-0}" = "1" ] && ! command -v codex >/dev/null 2>&1; 
   npm install -g @openai/codex
 fi
 
+if command -v codex >/dev/null 2>&1; then
+  CODEX_BIN_PATH="$(readlink -f "$(command -v codex)")"
+  CODEX_PACKAGE_DIR="$(cd "$(dirname "$CODEX_BIN_PATH")/.." && pwd)"
+  chmod a+rx "$(dirname "$CODEX_PACKAGE_DIR")"
+  chmod -R a+rX "$CODEX_PACKAGE_DIR"
+fi
+
 export NODE_OPTIONS="${NODE_OPTIONS:---disable-warning=ExperimentalWarning}"
 
 install -m 644 deploy/happy-paws-api.service /etc/systemd/system/happy-paws-api.service
