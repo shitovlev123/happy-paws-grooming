@@ -60,8 +60,8 @@ const server = createServer(async (request, response) => {
       sendJson(response, 200, {
         ok: true,
         service: 'happy-paws-api',
-        databaseConfigured: Boolean(process.env.DATABASE_URL),
-        aiConfigured: Boolean(process.env.OPENAI_API_KEY),
+        database: process.env.SQLITE_DB_FILE ? 'sqlite' : 'file-state',
+        aiMode: 'mock',
       })
       return
     }

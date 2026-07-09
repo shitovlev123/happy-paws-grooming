@@ -1,12 +1,13 @@
 [Unit]
 Description=Happy Paws Grooming API
-After=network-online.target docker.service
+After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
 WorkingDirectory=/opt/happy-paws/app
 EnvironmentFile=/etc/happy-paws/env
+Environment=NODE_OPTIONS=--disable-warning=ExperimentalWarning
 ExecStart=/usr/bin/node /opt/happy-paws/app/server/index.js
 Restart=always
 RestartSec=5

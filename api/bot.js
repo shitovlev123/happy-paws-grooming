@@ -32,7 +32,20 @@ const handleBooking = async (booking) => {
     }
   }
 
-  const { booking: savedBooking } = await saveBooking(booking)
+  const { booking: savedBooking, duplicate } = await saveBooking(booking)
+
+  if (duplicate) {
+    return {
+      status: 200,
+      body: {
+        ok: true,
+        bookingId: savedBooking.id,
+        idempotentReplay: true,
+        notifiedAdmins: 0,
+      },
+    }
+  }
+
   const admins = await getAdmins()
 
   if (admins.length === 0) {

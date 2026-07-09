@@ -14,9 +14,10 @@
 - Первый пользователь бота становится главным администратором, если админов ещё нет.
 - Администратор может выдавать права другим пользователям через Telegram.
 - Заявки приходят администраторам сообщением от бота.
+- Idempotency key для заявок: повторная отправка одной попытки возвращает ту же заявку и не дублирует Telegram-уведомление.
 - Статусы заявок: новая, подтверждена, выполнена, отменена.
-- PostgreSQL-хранилище для заявок, админов, pending-действий и статусов.
-- Floating AI-chat widget на сайте.
+- SQLite-хранилище для заявок, админов, pending-действий и статусов.
+- Floating mock AI-chat widget на сайте.
 - VPS deployment через Caddy, Node.js systemd services и GitHub Actions.
 
 ## Технологии
@@ -26,11 +27,11 @@
 - Vite
 - Phosphor Icons
 - Node.js
-- PostgreSQL
+- SQLite
 - Telegram Bot API
 - Caddy
 - GitHub Actions
-- OpenAI Responses API-ready endpoint
+- Mock AI endpoint
 
 ## Локальный запуск
 
@@ -76,14 +77,12 @@ pnpm bot
 ```bash
 TELEGRAM_BOT_TOKEN=replace_with_bot_token
 TELEGRAM_ADMIN_IDS=comma_separated_admin_telegram_ids_optional
-DATABASE_URL=postgres://happy_paws:password@127.0.0.1:5432/happy_paws
+SQLITE_DB_FILE=bot/data/happy-paws.sqlite
 PORT=3001
 HOST=127.0.0.1
-OPENAI_API_KEY=optional_openai_api_key
-OPENAI_MODEL=gpt-4.1-mini
 ```
 
-`OPENAI_API_KEY` опционален. Без него чат работает как безопасный демо-помощник с заранее заданной логикой. Не копируйте локальные Codex/OpenAI auth-токены в публичный сайт или VPS runtime. Для настоящего AI-помощника нужен серверный API key в env.
+Сейчас чат работает в mock AI режиме и не делает внешних AI-запросов. Не копируйте локальные Codex/OpenAI auth-токены в публичный сайт или VPS runtime. Для настоящего AI-помощника позже нужен отдельный серверный API key в env.
 
 ## API
 
@@ -91,13 +90,13 @@ OPENAI_MODEL=gpt-4.1-mini
 POST /api/bot
 ```
 
-Принимает заявку с сайта, сохраняет её в SQL или fallback-state и отправляет администраторам Telegram-сообщение.
+Принимает заявку с сайта, сохраняет её в SQLite или fallback-state и отправляет администраторам Telegram-сообщение.
 
 ```text
 POST /api/chat
 ```
 
-Отвечает на сообщения виджета AI-помощника. При наличии `OPENAI_API_KEY` использует OpenAI Responses API, без ключа возвращает демо-ответ.
+Отвечает на сообщения виджета AI-помощника. Сейчас endpoint работает как mock AI: выбирает сценарный ответ и быстрые подсказки по тексту вопроса.
 
 ```text
 GET /api/health
@@ -138,7 +137,7 @@ deploy/vps-deploy.sh
 - Caddy проксирует `/api/*` на `127.0.0.1:3001`.
 - `happy-paws-api.service` запускает Node API.
 - `happy-paws-bot.service` запускает Telegram polling bot.
-- PostgreSQL работает локально на `127.0.0.1:5432`.
+- SQLite хранится одним файлом, например `/opt/happy-paws/data/happy-paws.sqlite`.
 
 ## GitHub auto deploy
 
@@ -163,13 +162,13 @@ VPS_SSH_KEY
 ```text
 api/
   bot.js                  # заявки и Telegram webhook-compatible endpoint
-  chat.js                 # AI chat endpoint
+  chat.js                 # mock AI chat endpoint
 bot/
   controller.js           # Telegram-команды, callback-кнопки, админ-панель
   happy-paws-bot.js       # polling runner
   messages.js             # тексты и inline-кнопки Telegram
   state.js                # общий state facade
-  state-sql.js            # PostgreSQL adapter
+  state-sqlite.js         # SQLite adapter
   telegram-api.js         # Telegram Bot API wrapper
 deploy/
   Caddyfile

@@ -1,6 +1,7 @@
 export type PetType = 'dog' | 'cat' | 'other'
 
 export type BookingRequest = {
+  idempotencyKey?: string
   ownerName: string
   phone: string
   petName: string

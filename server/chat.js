@@ -1,71 +1,56 @@
-const systemPrompt = [
-  'Ты вежливый консультант груминг-салона "Счастливые лапки" в Хамовниках.',
-  'Помогай выбрать услугу, объясняй длительность ухода, мягко веди к онлайн-записи.',
-  'Не обещай медицинских диагнозов и не назначай лечение. Для здоровья советуй ветеринара.',
-  'Отвечай кратко, тепло и по-русски.',
-].join(' ')
+const defaultSuggestions = ['Подобрать услугу', 'Как подготовиться', 'Свободное время']
 
-const fallbackAnswer = (message) => {
-  const text = message.toLowerCase()
+const answerSets = [
+  {
+    keys: ['цена', 'стоим', 'сколько', 'прайс'],
+    text: 'Ориентир по цене есть в карточках услуг. Точная сумма зависит от размера питомца, состояния шерсти и выбранного ухода. Если сомневаетесь, начните с комплексного груминга, администратор уточнит детали после заявки.',
+    suggestions: ['Открыть услуги', 'Записать питомца', 'Сколько длится уход'],
+  },
+  {
+    keys: ['кот', 'кошка', 'кошк', 'мейн', 'британ'],
+    text: 'Кошек принимаем бережно и без лишнего шума. Обычно подбираем спокойный слот и начинаем с вычёсывания или аккуратного комплексного ухода, если питомец нормально переносит процедуры.',
+    suggestions: ['Записать кота', 'Подготовка к визиту', 'Уход без купания'],
+  },
+  {
+    keys: ['когт', 'лап', 'подстричь'],
+    text: 'Уход за когтями можно сделать отдельно или добавить к основной услуге. Если питомец нервничает, мастер делает паузы и работает мягко, без давления.',
+    suggestions: ['Записать на когти', 'Экспресс-уход', 'Спросить про щенка'],
+  },
+  {
+    keys: ['щен', 'первый', 'боится', 'стресс', 'нерв'],
+    text: 'Для первого визита лучше выбрать короткий спокойный уход: познакомиться со студией, мастером и инструментами. Так питомец легче привыкает, а следующий визит проходит увереннее.',
+    suggestions: ['Первый визит', 'Экспресс-уход', 'Записать питомца'],
+  },
+  {
+    keys: ['запис', 'время', 'дата', 'свобод'],
+    text: 'Выберите услугу, дату и удобное время в форме записи. Заявка попадёт администратору в Telegram, после этого запись подтвердят.',
+    suggestions: ['Перейти к записи', 'Выбрать услугу', 'Контакты салона'],
+  },
+  {
+    keys: ['подготов', 'перед визитом', 'мыть', 'корм'],
+    text: 'Перед визитом лучше не мыть питомца дома и не кормить плотно прямо перед дорогой. Возьмите поводок, переноску для кошки и расскажите мастеру, что питомец любит или не любит.',
+    suggestions: ['Записаться', 'Что взять с собой', 'Первый визит'],
+  },
+]
 
-  if (text.includes('цена') || text.includes('стоим')) {
-    return 'Цены зависят от услуги и шерсти питомца. В блоке услуг есть ориентиры, а точную стоимость администратор подтвердит после заявки.'
+const normalizeText = (value) => String(value || '').trim().toLowerCase()
+
+const pickMockAnswer = (message) => {
+  const text = normalizeText(message)
+  const matched = answerSets.find((answer) => answer.keys.some((key) => text.includes(key)))
+
+  if (matched) {
+    return matched
   }
 
-  if (text.includes('когт') || text.includes('лап')) {
-    return 'Для когтей можно выбрать отдельный уход или добавить его к комплексному грумингу. Если питомец волнуется, мастер делает всё спокойно и без спешки.'
+  return {
+    text: 'Я помогу выбрать уход, объясню подготовку к визиту и подскажу, где оставить заявку. Напишите породу, возраст питомца или услугу, которая вас интересует.',
+    suggestions: defaultSuggestions,
   }
-
-  if (text.includes('кот') || text.includes('кош')) {
-    return 'Кошек тоже принимаем. Обычно подбираем более спокойный слот и услугу без лишнего стресса: вычёсывание, купание или аккуратный комплексный уход.'
-  }
-
-  if (text.includes('запис') || text.includes('время')) {
-    return 'Выберите услугу, дату и время в форме записи. Заявка попадёт администратору в Telegram, после этого запись подтвердят.'
-  }
-
-  return 'Я помогу с выбором ухода, временем записи и подготовкой питомца к визиту. Напишите породу, услугу или что беспокоит перед грумингом.'
-}
-
-const cleanMessages = (messages, message) => {
-  const history = Array.isArray(messages) ? messages : []
-  const normalized = history
-    .filter((entry) => entry && ['user', 'assistant'].includes(entry.role) && entry.content)
-    .slice(-8)
-    .map((entry) => ({
-      role: entry.role,
-      content: String(entry.content).slice(0, 1200),
-    }))
-
-  if (message && !normalized.some((entry) => entry.role === 'user' && entry.content === message)) {
-    normalized.push({ role: 'user', content: String(message).slice(0, 1200) })
-  }
-
-  return normalized
-}
-
-const extractResponseText = (body) => {
-  if (body.output_text) {
-    return body.output_text
-  }
-
-  const output = Array.isArray(body.output) ? body.output : []
-
-  for (const item of output) {
-    const content = Array.isArray(item.content) ? item.content : []
-    const text = content.find((part) => part.type === 'output_text' || part.text)
-
-    if (text?.text) {
-      return text.text
-    }
-  }
-
-  return ''
 }
 
 export const handleChatRequest = async (payload = {}) => {
   const message = String(payload.message || payload.messages?.at?.(-1)?.content || '').trim()
-  const messages = cleanMessages(payload.messages, message)
 
   if (!message) {
     return {
@@ -74,48 +59,15 @@ export const handleChatRequest = async (payload = {}) => {
     }
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return {
-      status: 200,
-      body: {
-        ok: true,
-        fallback: true,
-        text: fallbackAnswer(message),
-      },
-    }
-  }
-
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
-      instructions: systemPrompt,
-      input: messages,
-      max_output_tokens: 420,
-    }),
-  })
-
-  const body = await response.json().catch(() => ({}))
-
-  if (!response.ok) {
-    return {
-      status: 502,
-      body: {
-        ok: false,
-        error: body.error?.message || 'AI assistant request failed',
-      },
-    }
-  }
+  const answer = pickMockAnswer(message)
 
   return {
     status: 200,
     body: {
       ok: true,
-      text: extractResponseText(body) || fallbackAnswer(message),
+      mode: 'mock',
+      text: answer.text,
+      suggestions: answer.suggestions,
     },
   }
 }

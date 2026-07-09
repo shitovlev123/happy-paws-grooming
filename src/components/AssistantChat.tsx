@@ -1,5 +1,5 @@
-import { ChatCircleDots, PaperPlaneTilt, Sparkle, X } from '@phosphor-icons/react'
-import { useRef, useState } from 'react'
+import { CalendarCheck, ChatCircleDots, Heart, PaperPlaneTilt, Scissors, Sparkle, X } from '@phosphor-icons/react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 
 type ChatMessage = {
@@ -7,54 +7,77 @@ type ChatMessage = {
   content: string
 }
 
+type ChatResponse = {
+  ok?: boolean
+  text?: string
+  suggestions?: string[]
+  error?: string
+}
+
 const firstMessage: ChatMessage = {
   role: 'assistant',
-  content: 'Здравствуйте! Помогу выбрать уход, сориентировать по записи и подготовке питомца к визиту.',
+  content: 'Здравствуйте! Я помогу выбрать уход, подготовиться к визиту и быстро перейти к записи.',
 }
+
+const quickPrompts = ['Подобрать услугу', 'Как подготовиться', 'Свободное время']
+
+const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
 export const AssistantChat = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([firstMessage])
+  const [suggestions, setSuggestions] = useState(quickPrompts)
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const messagesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    messagesRef.current?.scrollTo({
+      top: messagesRef.current.scrollHeight,
+      behavior: 'smooth',
+    })
+  }, [messages, isSending])
 
   const openChat = () => {
     setIsOpen(true)
     window.setTimeout(() => inputRef.current?.focus(), 80)
   }
 
-  const sendMessage = async (event: FormEvent) => {
-    event.preventDefault()
-    const text = input.trim()
+  const sendText = async (text: string) => {
+    const message = text.trim()
 
-    if (!text || isSending) {
+    if (!message || isSending) {
       return
     }
 
-    const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: message }]
     setMessages(nextMessages)
     setInput('')
     setIsSending(true)
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: text,
-          messages: nextMessages,
+      const [response] = await Promise.all([
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message,
+            messages: nextMessages,
+          }),
         }),
-      })
-      const data = (await response.json().catch(() => null)) as { ok?: boolean; text?: string; error?: string } | null
+        wait(520),
+      ])
+      const data = (await response.json().catch(() => null)) as ChatResponse | null
 
       if (!response.ok || !data?.ok) {
         throw new Error(data?.error || 'Chat request failed')
       }
 
       setMessages((current) => [...current, { role: 'assistant', content: data.text || firstMessage.content }])
+      setSuggestions(data.suggestions?.length ? data.suggestions.slice(0, 3) : quickPrompts)
     } catch {
       setMessages((current) => [
         ...current,
@@ -63,9 +86,15 @@ export const AssistantChat = () => {
           content: 'Сейчас не получилось ответить. Заявку можно оставить в форме, администратор увидит её в Telegram.',
         },
       ])
+      setSuggestions(['Перейти к записи', 'Контакты салона', 'Выбрать услугу'])
     } finally {
       setIsSending(false)
     }
+  }
+
+  const sendMessage = (event: FormEvent) => {
+    event.preventDefault()
+    void sendText(input)
   }
 
   return (
@@ -78,20 +107,57 @@ export const AssistantChat = () => {
             </span>
             <div>
               <strong>Помощник салона</strong>
-              <span>Ответит про уход и запись</span>
+              <span>Подскажет уход и запись</span>
             </div>
             <button type="button" aria-label="Закрыть чат" onClick={() => setIsOpen(false)}>
               <X size={18} />
             </button>
           </div>
 
-          <div className="assistant-messages" aria-live="polite">
+          <div className="assistant-brief" aria-label="Возможности помощника">
+            <span>
+              <Scissors size={16} weight="duotone" />
+              Услуги
+            </span>
+            <span>
+              <Heart size={16} weight="duotone" />
+              Подготовка
+            </span>
+            <span>
+              <CalendarCheck size={16} weight="duotone" />
+              Запись
+            </span>
+          </div>
+
+          <div className="assistant-messages" aria-live="polite" ref={messagesRef}>
             {messages.map((message, index) => (
-              <p className={`assistant-message ${message.role}`} key={`${message.role}-${index}`}>
-                {message.content}
-              </p>
+              <div className={`assistant-message ${message.role}`} key={`${message.role}-${index}`}>
+                <span className="assistant-avatar" aria-hidden="true">
+                  {message.role === 'assistant' ? <Sparkle size={15} weight="duotone" /> : <Heart size={15} weight="duotone" />}
+                </span>
+                <p>{message.content}</p>
+              </div>
             ))}
-            {isSending ? <p className="assistant-message assistant">Печатаю короткий ответ...</p> : null}
+            {isSending ? (
+              <div className="assistant-message assistant is-typing">
+                <span className="assistant-avatar" aria-hidden="true">
+                  <Sparkle size={15} weight="duotone" />
+                </span>
+                <p>
+                  <span />
+                  <span />
+                  <span />
+                </p>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="assistant-suggestions" aria-label="Быстрые вопросы">
+            {suggestions.map((suggestion) => (
+              <button type="button" onClick={() => void sendText(suggestion)} disabled={isSending} key={suggestion}>
+                {suggestion}
+              </button>
+            ))}
           </div>
 
           <form className="assistant-form" onSubmit={sendMessage}>
@@ -110,8 +176,13 @@ export const AssistantChat = () => {
         </div>
       ) : (
         <button className="assistant-toggle" type="button" onClick={openChat} aria-label="Открыть AI-консультанта">
-          <ChatCircleDots size={26} weight="duotone" />
-          <span>Спросить</span>
+          <span className="assistant-toggle-icon">
+            <ChatCircleDots size={25} weight="duotone" />
+          </span>
+          <span>
+            <strong>Помощник</strong>
+            <small>подбор ухода</small>
+          </span>
         </button>
       )}
     </aside>

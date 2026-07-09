@@ -23,6 +23,12 @@ if [ -f "$ENV_FILE" ]; then
   set +a
 fi
 
+if [ -n "${SQLITE_DB_FILE:-}" ]; then
+  install -d -m 750 -o happy-paws -g happy-paws "$(dirname "$SQLITE_DB_FILE")"
+fi
+
+export NODE_OPTIONS="${NODE_OPTIONS:---disable-warning=ExperimentalWarning}"
+
 corepack enable
 corepack prepare pnpm@11.7.0 --activate
 pnpm install --frozen-lockfile

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Clock, MapPin, PaperPlaneTilt, Phone } from '@phosphor-icons/react'
 import { petTypeLabels, services } from '../data/content'
 import { sendBookingRequest } from '../lib/bookingApi'
@@ -86,19 +86,33 @@ const initialForm: FormState = {
   comment: '',
 }
 
+const createIdempotencyKey = () => {
+  if (crypto.randomUUID) {
+    return `booking_${crypto.randomUUID()}`
+  }
+
+  return `booking_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`
+}
+
 export const BookingForm = () => {
   const [form, setForm] = useState<FormState>(initialForm)
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [celebrationKey, setCelebrationKey] = useState(0)
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
+  const idempotencyKeyRef = useRef('')
 
   const selectedService = useMemo(
     () => services.find((service) => service.id === form.serviceId) ?? services[0],
     [form.serviceId],
   )
 
+  const resetIdempotencyKey = () => {
+    idempotencyKeyRef.current = ''
+  }
+
   const updateField = (field: keyof FormState, value: string) => {
+    resetIdempotencyKey()
     setForm((current) => ({ ...current, [field]: value }))
   }
 
@@ -110,6 +124,7 @@ export const BookingForm = () => {
         return
       }
 
+      resetIdempotencyKey()
       setForm((current) => ({ ...current, serviceId }))
       setSuccessMessage('')
     }
@@ -134,12 +149,14 @@ export const BookingForm = () => {
   }
 
   const handleDateChange = (value: string) => {
+    resetIdempotencyKey()
     setForm((current) => ({ ...current, preferredDate: value, preferredTime: '' }))
     setIsTimePickerOpen(Boolean(value))
     setSuccessMessage('')
   }
 
   const selectTimeSlot = (slot: string) => {
+    resetIdempotencyKey()
     setForm((current) => ({ ...current, preferredTime: slot }))
     setIsTimePickerOpen(false)
     setSuccessMessage('')
@@ -160,15 +177,18 @@ export const BookingForm = () => {
     }
 
     setIsSubmitting(true)
+    idempotencyKeyRef.current ||= createIdempotencyKey()
 
     try {
       await sendBookingRequest({
         ...form,
+        idempotencyKey: idempotencyKeyRef.current,
         serviceName: selectedService.title,
       })
       setSuccessMessage('Запись зарегистрирована. Спасибо!')
       setCelebrationKey((current) => current + 1)
       setIsTimePickerOpen(false)
+      resetIdempotencyKey()
       setForm(initialForm)
     } catch {
       setSuccessMessage('Не удалось отправить заявку. Проверьте связь и попробуйте еще раз.')

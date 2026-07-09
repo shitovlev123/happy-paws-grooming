@@ -1,6 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { createSqlStateStore } from './state-sql.js'
+import { createSqliteStateStore } from './state-sqlite.js'
 
 const vercelStateNamespace = (
   process.env.BOT_STATE_NAMESPACE ||
@@ -17,7 +17,7 @@ const DEFAULT_STATE_FILE =
 
 const STATE_FILE = process.env.BOT_STATE_FILE || DEFAULT_STATE_FILE
 const STATE_PREFIX = 'happy-paws-bot-state-'
-let sqlStore
+let sqliteStore
 
 const emptyState = {
   ownerId: null,
@@ -27,6 +27,11 @@ const emptyState = {
 }
 
 const normalizeId = (id) => String(id)
+
+const normalizeIdempotencyKey = (key) => {
+  const value = String(key || '').trim()
+  return value ? value.slice(0, 160) : null
+}
 
 const envAdmins = () =>
   (process.env.TELEGRAM_ADMIN_IDS || '')
@@ -67,19 +72,19 @@ const mergeEnvAdmins = (state) => {
   }
 }
 
-const getSqlStore = () => {
-  if (!process.env.DATABASE_URL) {
+const getSqliteStore = () => {
+  if (!process.env.SQLITE_DB_FILE) {
     return null
   }
 
-  if (!sqlStore) {
-    sqlStore = createSqlStateStore()
+  if (!sqliteStore) {
+    sqliteStore = createSqliteStateStore()
   }
 
-  return sqlStore
+  return sqliteStore
 }
 
-const readSqlState = async (store) => {
+const readSqliteState = async (store) => {
   const admins = envAdmins()
   await store.ensureEnvAdmins(admins)
   return mergeEnvAdmins(await store.readState())
@@ -112,10 +117,10 @@ const readLegacyVercelState = async () => {
 }
 
 export const readState = async () => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
-    return readSqlState(store)
+    return readSqliteState(store)
   }
 
   const state = await readStateFile(STATE_FILE)
@@ -128,7 +133,7 @@ export const readState = async () => {
 }
 
 export const writeState = async (state) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     await store.writeState(state)
@@ -140,7 +145,7 @@ export const writeState = async (state) => {
 }
 
 export const bootstrapAdmin = async (userId) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     await store.ensureEnvAdmins(envAdmins())
@@ -175,7 +180,7 @@ export const requireAdmin = async (userId) => {
 }
 
 export const grantAdmin = async (requesterId, targetId) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     await store.ensureEnvAdmins(envAdmins())
@@ -196,7 +201,7 @@ export const grantAdmin = async (requesterId, targetId) => {
 }
 
 export const setPendingAdminGrant = async (userId, messageId) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     await store.setPendingAdminGrant(userId, messageId)
@@ -212,7 +217,7 @@ export const setPendingAdminGrant = async (userId, messageId) => {
 }
 
 export const clearPendingAdminGrant = async (userId) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     await store.clearPendingAdminGrant(userId)
@@ -236,7 +241,7 @@ export const getAdmins = async () => {
 }
 
 export const saveBooking = async (booking) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     const result = await store.saveBooking(booking)
@@ -244,20 +249,30 @@ export const saveBooking = async (booking) => {
   }
 
   const state = await readState()
+  const idempotencyKey = normalizeIdempotencyKey(booking.idempotencyKey)
+  const existingBooking = idempotencyKey
+    ? state.bookings.find((record) => record.idempotencyKey === idempotencyKey)
+    : null
+
+  if (existingBooking) {
+    return { booking: existingBooking, duplicate: true, state }
+  }
+
   const record = {
     ...booking,
     id: `HP-${Date.now().toString(36).toUpperCase()}`,
+    idempotencyKey: idempotencyKey || undefined,
     status: 'new',
     createdAt: new Date().toISOString(),
   }
 
   state.bookings = [record, ...state.bookings].slice(0, 200)
   await writeState(state)
-  return { booking: record, state }
+  return { booking: record, duplicate: false, state }
 }
 
 export const updateBookingStatus = async (bookingId, status) => {
-  const store = getSqlStore()
+  const store = getSqliteStore()
 
   if (store) {
     const result = await store.updateBookingStatus(bookingId, status)
