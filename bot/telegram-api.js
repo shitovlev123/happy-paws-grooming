@@ -72,3 +72,8 @@ export const setWebhook = (url) =>
     allowed_updates: ['message', 'callback_query'],
     drop_pending_updates: false,
   })
+
+export const deleteWebhook = () =>
+  telegramRequest('deleteWebhook', {
+    drop_pending_updates: false,
+  })

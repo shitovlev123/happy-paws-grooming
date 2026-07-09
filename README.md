@@ -1,22 +1,23 @@
 # Счастливые лапки
 
-MVP-проект для портфолио: клиентский лендинг и онлайн-запись для grooming-салона. Публичный сайт выглядит как готовый сайт для клиента салона: без технических терминов, админки, CRM-описаний и внутренних деталей.
+Портфолио-проект для груминг-салона: живой лендинг, онлайн-запись, Telegram-админка, SQL-база заявок и аккуратный AI-помощник на сайте.
 
-Администрирование вынесено в Telegram-бота. Первый пользователь, который запускает бота командой `/start`, становится главным администратором. Администратор может выдавать права другим пользователям и обрабатывать заявки внутри Telegram.
+Публичный сайт выглядит как клиентский продукт для салона: без технических описаний, CRM-терминов и внутренней кухни. Вся админская логика вынесена в Telegram-бота.
 
 ## Что реализовано
 
-- Светлый адаптивный лендинг груминг-салона.
-- Видео в hero-блоке, бегущая строка, услуги, преимущества, мастера, отзывы и контакты.
-- Клиентская форма онлайн-записи с выбором даты и времени.
-- Serverless endpoint `/api/bot` для заявок с сайта и Telegram webhook.
-- Telegram-бот для администрирования заявок.
-- Первый пользователь бота автоматически получает права главного администратора.
-- Команда `/grant TELEGRAM_ID` выдаёт права администратора другим пользователям.
-- Новые заявки автоматически приходят администраторам сообщением от бота.
-- Кнопка «Админ-панель» открывает управление заявками и администраторами.
-- Смена статусов заявок внутри Telegram: новая, подтверждена, выполнена, отменена.
-- README и структура проекта для портфолио-кейса.
+- Адаптивный лендинг груминг-салона в светлом премиальном стиле.
+- Hero с видео-фоном, блок услуг, мастера, отзывы, карта, контакты и форма записи.
+- Кликабельные карточки услуг: выбранная услуга автоматически подставляется в форму.
+- Форма онлайн-записи с именем владельца, телефоном, питомцем, услугой, датой и временем.
+- Telegram-бот для администраторов.
+- Первый пользователь бота становится главным администратором, если админов ещё нет.
+- Администратор может выдавать права другим пользователям через Telegram.
+- Заявки приходят администраторам сообщением от бота.
+- Статусы заявок: новая, подтверждена, выполнена, отменена.
+- PostgreSQL-хранилище для заявок, админов, pending-действий и статусов.
+- Floating AI-chat widget на сайте.
+- VPS deployment через Caddy, Node.js systemd services и GitHub Actions.
 
 ## Технологии
 
@@ -24,17 +25,21 @@ MVP-проект для портфолио: клиентский лендинг 
 - TypeScript
 - Vite
 - Phosphor Icons
-- Vercel-style serverless API
+- Node.js
+- PostgreSQL
 - Telegram Bot API
+- Caddy
+- GitHub Actions
+- OpenAI Responses API-ready endpoint
 
-## Запуск сайта
+## Локальный запуск
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Открыть сайт:
+Сайт:
 
 ```text
 http://localhost:5173
@@ -46,35 +51,63 @@ http://localhost:5173
 pnpm build
 ```
 
-## Endpoint заявок
-
-```text
-POST /api/bot
-```
-
-Он принимает заявку, сохраняет её в состояние бота и сразу отправляет администраторам Telegram-сообщение с кнопками статусов.
-
-## Telegram-бот
-
-Токен бота нельзя хранить во frontend-коде и нельзя коммитить в GitHub. Используйте `.env` или переменные окружения хостинга.
-
-Создайте `.env` по примеру `.env.example`:
+Локальный API:
 
 ```bash
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_ADMIN_IDS=123456789
-BOT_STATE_FILE=bot/data/state.json
+pnpm serve
 ```
 
-Для Vercel обязательно задайте `TELEGRAM_BOT_TOKEN` и `TELEGRAM_ADMIN_IDS` в Environment Variables. Serverless-состояние в `/tmp` может сбрасываться после деплоя, поэтому постоянный список администраторов должен приходить из env.
+Миграция SQL-схемы:
 
-Локальный polling-запуск бота:
+```bash
+pnpm migrate
+```
+
+Telegram polling bot:
 
 ```bash
 pnpm bot
 ```
 
-Команды бота:
+## Переменные окружения
+
+Создайте `.env` по примеру `.env.example`.
+
+```bash
+TELEGRAM_BOT_TOKEN=replace_with_bot_token
+TELEGRAM_ADMIN_IDS=comma_separated_admin_telegram_ids_optional
+DATABASE_URL=postgres://happy_paws:password@127.0.0.1:5432/happy_paws
+PORT=3001
+HOST=127.0.0.1
+OPENAI_API_KEY=optional_openai_api_key
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+`OPENAI_API_KEY` опционален. Без него чат работает как безопасный демо-помощник с заранее заданной логикой. Не копируйте локальные Codex/OpenAI auth-токены в публичный сайт или VPS runtime. Для настоящего AI-помощника нужен серверный API key в env.
+
+## API
+
+```text
+POST /api/bot
+```
+
+Принимает заявку с сайта, сохраняет её в SQL или fallback-state и отправляет администраторам Telegram-сообщение.
+
+```text
+POST /api/chat
+```
+
+Отвечает на сообщения виджета AI-помощника. При наличии `OPENAI_API_KEY` использует OpenAI Responses API, без ключа возвращает демо-ответ.
+
+```text
+GET /api/health
+```
+
+Проверяет состояние VPS API.
+
+## Telegram-бот
+
+Команды:
 
 ```text
 /start
@@ -85,45 +118,82 @@ pnpm bot
 /status BOOKING_ID new|confirmed|completed|cancelled
 ```
 
-Логика доступа:
+На VPS бот работает в polling-режиме через `happy-paws-bot.service`. Это важно для текущего сервера, потому что порт `443` занят Xray Reality, а Telegram webhook требует публичный HTTPS URL.
 
-- если администраторов ещё нет, первый пользователь `/start` становится главным администратором;
-- администратор может выдать доступ другому пользователю через `/grant TELEGRAM_ID`;
-- администратор может нажать кнопку «Админ-панель» → «Выдать админку» и отправить Telegram ID ответом на сообщение;
-- пользователи без доступа не видят заявки и не могут менять статусы.
+## VPS deployment
 
-Для Vercel webhook нужно указать URL:
+Файлы инфраструктуры лежат в `deploy/`:
 
 ```text
-https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR_DOMAIN/api/bot
+deploy/Caddyfile
+deploy/happy-paws-api.service
+deploy/happy-paws-bot.service
+deploy/vps-deploy.sh
 ```
+
+Схема:
+
+- Caddy слушает `:80`.
+- Caddy отдаёт `dist/`.
+- Caddy проксирует `/api/*` на `127.0.0.1:3001`.
+- `happy-paws-api.service` запускает Node API.
+- `happy-paws-bot.service` запускает Telegram polling bot.
+- PostgreSQL работает локально на `127.0.0.1:5432`.
+
+## GitHub auto deploy
+
+Workflow:
+
+```text
+.github/workflows/deploy-vps.yml
+```
+
+Нужные GitHub Secrets:
+
+```text
+VPS_HOST
+VPS_USER
+VPS_SSH_KEY
+```
+
+На сервере deploy key можно ограничить forced command на `/opt/happy-paws/deploy.sh`, чтобы GitHub Actions мог только деплоить проект.
 
 ## Структура проекта
 
 ```text
 api/
-  bot.js                # endpoint для заявок и Telegram webhook
+  bot.js                  # заявки и Telegram webhook-compatible endpoint
+  chat.js                 # AI chat endpoint
 bot/
-  controller.js         # обработка сообщений, callback-кнопок и админ-панели
-  happy-paws-bot.js     # Telegram bot polling runner
-  messages.js           # тексты и кнопки для заявок
-  state.js              # состояние админов и заявок
-  telegram-api.js       # обёртка Telegram Bot API
+  controller.js           # Telegram-команды, callback-кнопки, админ-панель
+  happy-paws-bot.js       # polling runner
+  messages.js             # тексты и inline-кнопки Telegram
+  state.js                # общий state facade
+  state-sql.js            # PostgreSQL adapter
+  telegram-api.js         # Telegram Bot API wrapper
+deploy/
+  Caddyfile
+  happy-paws-api.service
+  happy-paws-bot.service
+  vps-deploy.sh
+server/
+  chat.js
+  index.js
+  migrate.js
 src/
-  assets/               # hero image
-  components/           # публичные секции сайта
-  data/                 # услуги, мастера, отзывы
-  lib/                  # отправка заявки из frontend
-  pages/                # LandingPage
-  types/                # типы формы и контента
+  components/
+  data/
+  lib/
+  pages/
+  types/
 public/
-  happy-paws-hero.mp4   # видео для hero-блока
+  happy-paws-hero.mp4
 ```
 
 ## Что улучшить дальше
 
-- Подключить постоянную базу данных: Supabase, Neon, Upstash или PostgreSQL.
-- Сделать webhook-режим Telegram-бота вместо polling.
-- Добавить календарь свободных слотов.
-- Добавить загрузку реальных фото мастеров и работ.
+- Подключить реальный домен и решить схему HTTPS вместе с Xray Reality.
+- Добавить календарь занятых слотов и блокировку уже занятых дат/времени.
 - Добавить напоминания клиентам перед визитом.
+- Добавить настоящие фото мастеров и работ.
+- Подключить полноценный OpenAI API key для AI-помощника.

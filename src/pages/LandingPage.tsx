@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { AssistantChat } from '../components/AssistantChat'
 import { BookingForm } from '../components/BookingForm'
 import { Footer } from '../components/Footer'
 import { Groomers } from '../components/Groomers'
@@ -43,6 +44,7 @@ export const LandingPage = () => {
         <BookingForm />
       </main>
       <Footer />
+      <AssistantChat />
     </>
   )
 }

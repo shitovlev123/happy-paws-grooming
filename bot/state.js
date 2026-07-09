@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
+import { createSqlStateStore } from './state-sql.js'
 
 const vercelStateNamespace = (
   process.env.BOT_STATE_NAMESPACE ||
@@ -16,6 +17,7 @@ const DEFAULT_STATE_FILE =
 
 const STATE_FILE = process.env.BOT_STATE_FILE || DEFAULT_STATE_FILE
 const STATE_PREFIX = 'happy-paws-bot-state-'
+let sqlStore
 
 const emptyState = {
   ownerId: null,
@@ -65,6 +67,24 @@ const mergeEnvAdmins = (state) => {
   }
 }
 
+const getSqlStore = () => {
+  if (!process.env.DATABASE_URL) {
+    return null
+  }
+
+  if (!sqlStore) {
+    sqlStore = createSqlStateStore()
+  }
+
+  return sqlStore
+}
+
+const readSqlState = async (store) => {
+  const admins = envAdmins()
+  await store.ensureEnvAdmins(admins)
+  return mergeEnvAdmins(await store.readState())
+}
+
 const readStateFile = async (file) => {
   try {
     return { ...emptyState, ...JSON.parse(await readFile(file, 'utf8')) }
@@ -92,6 +112,12 @@ const readLegacyVercelState = async () => {
 }
 
 export const readState = async () => {
+  const store = getSqlStore()
+
+  if (store) {
+    return readSqlState(store)
+  }
+
   const state = await readStateFile(STATE_FILE)
 
   if (state) {
@@ -102,11 +128,26 @@ export const readState = async () => {
 }
 
 export const writeState = async (state) => {
+  const store = getSqlStore()
+
+  if (store) {
+    await store.writeState(state)
+    return
+  }
+
   await mkdir(dirname(STATE_FILE), { recursive: true })
   await writeFile(STATE_FILE, JSON.stringify(state, null, 2))
 }
 
 export const bootstrapAdmin = async (userId) => {
+  const store = getSqlStore()
+
+  if (store) {
+    await store.ensureEnvAdmins(envAdmins())
+    const result = await store.bootstrapAdmin(userId)
+    return { ...result, state: mergeEnvAdmins(result.state) }
+  }
+
   const state = await readState()
   const id = normalizeId(userId)
 
@@ -134,6 +175,14 @@ export const requireAdmin = async (userId) => {
 }
 
 export const grantAdmin = async (requesterId, targetId) => {
+  const store = getSqlStore()
+
+  if (store) {
+    await store.ensureEnvAdmins(envAdmins())
+    const result = await store.grantAdmin(requesterId, targetId)
+    return { ...result, state: mergeEnvAdmins(result.state) }
+  }
+
   const state = await readState()
 
   if (!state.admins.includes(normalizeId(requesterId))) {
@@ -147,6 +196,13 @@ export const grantAdmin = async (requesterId, targetId) => {
 }
 
 export const setPendingAdminGrant = async (userId, messageId) => {
+  const store = getSqlStore()
+
+  if (store) {
+    await store.setPendingAdminGrant(userId, messageId)
+    return
+  }
+
   const state = await readState()
   state.pendingAdminGrants = {
     ...(state.pendingAdminGrants || {}),
@@ -156,6 +212,13 @@ export const setPendingAdminGrant = async (userId, messageId) => {
 }
 
 export const clearPendingAdminGrant = async (userId) => {
+  const store = getSqlStore()
+
+  if (store) {
+    await store.clearPendingAdminGrant(userId)
+    return
+  }
+
   const state = await readState()
   delete state.pendingAdminGrants?.[normalizeId(userId)]
   await writeState(state)
@@ -173,6 +236,13 @@ export const getAdmins = async () => {
 }
 
 export const saveBooking = async (booking) => {
+  const store = getSqlStore()
+
+  if (store) {
+    const result = await store.saveBooking(booking)
+    return { ...result, state: mergeEnvAdmins(result.state) }
+  }
+
   const state = await readState()
   const record = {
     ...booking,
@@ -187,6 +257,13 @@ export const saveBooking = async (booking) => {
 }
 
 export const updateBookingStatus = async (bookingId, status) => {
+  const store = getSqlStore()
+
+  if (store) {
+    const result = await store.updateBookingStatus(bookingId, status)
+    return { ...result, state: mergeEnvAdmins(result.state) }
+  }
+
   const state = await readState()
   let updated = null
 
