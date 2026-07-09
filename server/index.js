@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { URL } from 'node:url'
 import botHandler from '../api/bot.js'
 import chatHandler from '../api/chat.js'
+import { getCodexAgentMode } from './codex-agent.js'
 
 const port = Number(process.env.PORT || 3001)
 const host = process.env.HOST || '127.0.0.1'
@@ -61,7 +62,7 @@ const server = createServer(async (request, response) => {
         ok: true,
         service: 'happy-paws-api',
         database: process.env.SQLITE_DB_FILE ? 'sqlite' : 'file-state',
-        aiMode: 'mock',
+        aiMode: getCodexAgentMode(),
       })
       return
     }

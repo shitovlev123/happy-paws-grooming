@@ -17,7 +17,7 @@
 - Idempotency key для заявок: повторная отправка одной попытки возвращает ту же заявку и не дублирует Telegram-уведомление.
 - Статусы заявок: новая, подтверждена, выполнена, отменена.
 - SQLite-хранилище для заявок, админов, pending-действий и статусов.
-- Floating mock AI-chat widget на сайте.
+- Floating AI-chat widget на сайте: mock по умолчанию или изолированный Codex CLI agent на VPS.
 - VPS deployment через Caddy, Node.js systemd services и GitHub Actions.
 
 ## Технологии
@@ -32,6 +32,7 @@
 - Caddy
 - GitHub Actions
 - Mock AI endpoint
+- Optional Codex CLI agent gateway
 
 ## Локальный запуск
 
@@ -80,9 +81,34 @@ TELEGRAM_ADMIN_IDS=comma_separated_admin_telegram_ids_optional
 SQLITE_DB_FILE=bot/data/happy-paws.sqlite
 PORT=3001
 HOST=127.0.0.1
+CODEX_AGENT_ENABLED=0
+CODEX_AGENT_BIN=codex
+CODEX_AGENT_HOME=bot/data/codex-home
+CODEX_AGENT_WORKDIR=bot/data/codex-agent-workspace
+CODEX_AGENT_TIMEOUT_MS=35000
+CODEX_AGENT_MAX_PROMPT_CHARS=800
 ```
 
-Сейчас чат работает в mock AI режиме и не делает внешних AI-запросов. Не копируйте локальные Codex/OpenAI auth-токены в публичный сайт или VPS runtime. Для настоящего AI-помощника позже нужен отдельный серверный API key в env.
+Сейчас чат безопасно работает в mock AI режиме, если `CODEX_AGENT_ENABLED=0` или Codex CLI не готов. При `CODEX_AGENT_ENABLED=1` backend сначала пытается получить ответ через Codex CLI agent, а при ошибке возвращается к mock-ответу, чтобы сайт не падал.
+
+## Codex agent mode
+
+Codex agent подключается только через backend `/api/chat`. Frontend не получает токены и не общается с Codex напрямую.
+
+Защитные ограничения:
+
+- prompt ограничен по длине через `CODEX_AGENT_MAX_PROMPT_CHARS`;
+- `/api/chat` имеет простой rate limit;
+- Codex запускается через `spawn` без shell;
+- процесс получает очищенный env без Telegram token, SQLite path и deploy secrets;
+- используется отдельный `CODEX_AGENT_HOME`;
+- используется отдельная рабочая папка `CODEX_AGENT_WORKDIR` только с публичным контекстом салона;
+- runner запускается с `codex exec --sandbox read-only --ask-for-approval never --skip-git-repo-check --json -`;
+- при ошибке, отсутствии CLI или отсутствии авторизации сайт отвечает mock-режимом.
+
+На VPS deploy script создает `CODEX_AGENT_HOME` и `CODEX_AGENT_WORKDIR`. Если `CODEX_AGENT_ENABLED=1` и команда `codex` не найдена, deploy script устанавливает Codex CLI через `npm install -g @openai/codex`.
+
+Авторизацию Codex нужно делать отдельно для `CODEX_AGENT_HOME`. Локальный `~/.codex/auth.json` не коммитится в репозиторий.
 
 ## API
 
@@ -96,7 +122,7 @@ POST /api/bot
 POST /api/chat
 ```
 
-Отвечает на сообщения виджета AI-помощника. Сейчас endpoint работает как mock AI: выбирает сценарный ответ и быстрые подсказки по тексту вопроса.
+Отвечает на сообщения виджета AI-помощника. Endpoint работает как mock AI или как безопасный шлюз к Codex CLI agent, если агент включен и авторизован.
 
 ```text
 GET /api/health

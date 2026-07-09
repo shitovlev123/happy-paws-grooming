@@ -1,3 +1,5 @@
+import { tryCodexAgent } from './codex-agent.js'
+
 const defaultSuggestions = ['Подобрать услугу', 'Как подготовиться', 'Свободное время']
 
 const answerSets = [
@@ -56,6 +58,15 @@ export const handleChatRequest = async (payload = {}) => {
     return {
       status: 400,
       body: { ok: false, error: 'Message is required' },
+    }
+  }
+
+  const codexResult = await tryCodexAgent(message)
+
+  if (codexResult.ok) {
+    return {
+      status: 200,
+      body: codexResult.body,
     }
   }
 

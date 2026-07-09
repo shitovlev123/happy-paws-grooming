@@ -27,6 +27,26 @@ if [ -n "${SQLITE_DB_FILE:-}" ]; then
   install -d -m 750 -o happy-paws -g happy-paws "$(dirname "$SQLITE_DB_FILE")"
 fi
 
+CODEX_AGENT_HOME="${CODEX_AGENT_HOME:-/opt/happy-paws/codex-home}"
+CODEX_AGENT_WORKDIR="${CODEX_AGENT_WORKDIR:-/opt/happy-paws/codex-agent-workspace}"
+install -d -m 750 -o happy-paws -g happy-paws "$CODEX_AGENT_HOME" "$CODEX_AGENT_WORKDIR"
+cat > "$CODEX_AGENT_WORKDIR/CONTEXT.md" <<'EOF'
+# Счастливые лапки
+
+Публичный контекст для AI-консультанта сайта.
+
+- Груминг-салон в Москве, район Хамовники.
+- Услуги: комплексный груминг, стрижка, купание, вычесывание, уход за когтями, экспресс-уход.
+- Запись идет через форму на сайте с выбором даты и времени.
+- Администратор получает заявки в Telegram.
+- Тон общения: спокойный, заботливый, премиальный, без технических подробностей.
+EOF
+chown -R happy-paws:happy-paws "$CODEX_AGENT_HOME" "$CODEX_AGENT_WORKDIR"
+
+if [ "${CODEX_AGENT_ENABLED:-0}" = "1" ] && ! command -v codex >/dev/null 2>&1; then
+  npm install -g @openai/codex
+fi
+
 export NODE_OPTIONS="${NODE_OPTIONS:---disable-warning=ExperimentalWarning}"
 
 install -m 644 deploy/happy-paws-api.service /etc/systemd/system/happy-paws-api.service
