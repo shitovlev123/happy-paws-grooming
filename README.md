@@ -103,7 +103,7 @@ Codex agent подключается только через backend `/api/chat`
 - процесс получает очищенный env без Telegram token, SQLite path и deploy secrets;
 - используется отдельный `CODEX_AGENT_HOME`;
 - используется отдельная рабочая папка `CODEX_AGENT_WORKDIR` только с публичным контекстом салона;
-- runner запускается с `codex exec --sandbox read-only --ask-for-approval never --skip-git-repo-check --json -`;
+- runner запускается с `codex exec --sandbox read-only -c approval_policy="never" --skip-git-repo-check --ignore-rules --json -`;
 - при ошибке, отсутствии CLI или отсутствии авторизации сайт отвечает mock-режимом.
 
 На VPS deploy script создает `CODEX_AGENT_HOME` и `CODEX_AGENT_WORKDIR`. Если `CODEX_AGENT_ENABLED=1` и команда `codex` не найдена, deploy script устанавливает Codex CLI через `npm install -g @openai/codex`.
