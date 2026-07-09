@@ -33,6 +33,9 @@ corepack enable
 corepack prepare pnpm@11.7.0 --activate
 pnpm install --frozen-lockfile
 pnpm migrate
+if [ -n "${SQLITE_DB_FILE:-}" ]; then
+  chown -R happy-paws:happy-paws "$(dirname "$SQLITE_DB_FILE")"
+fi
 pnpm build
 
 chown -R happy-paws:happy-paws "$APP_DIR"
