@@ -29,6 +29,11 @@ fi
 
 export NODE_OPTIONS="${NODE_OPTIONS:---disable-warning=ExperimentalWarning}"
 
+install -m 644 deploy/happy-paws-api.service /etc/systemd/system/happy-paws-api.service
+install -m 644 deploy/happy-paws-bot.service /etc/systemd/system/happy-paws-bot.service
+install -m 644 deploy/Caddyfile /etc/caddy/Caddyfile
+systemctl daemon-reload
+
 corepack enable
 corepack prepare pnpm@11.7.0 --activate
 pnpm install --frozen-lockfile
