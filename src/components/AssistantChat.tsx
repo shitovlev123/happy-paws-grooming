@@ -16,40 +16,38 @@ type ChatResponse = {
 
 const firstMessage: ChatMessage = {
   role: 'assistant',
-  content: 'Здравствуйте! Я помогу выбрать уход, подготовиться к визиту и быстро перейти к записи.',
+  content: 'Здравствуйте! Я здесь чтобы помочь вам 😊. Используйте заготовленные вопросы или задайте свой.',
 }
 
 const quickPrompts = ['Подобрать услугу', 'Как подготовиться', 'Свободное время']
-const handwritingReplayMs = 14000
+const announcementDelayMs = 2400
+const announcementHideMs = 12000
+const announcementText = 'Не знаете, какую услугу выбрать? Спросите ИИ-консультанта.'
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
-
-const HandWritingLabel = ({ cycle }: { cycle: number }) => (
-  <span className="assistant-handwriting" aria-hidden="true" key={cycle}>
-    <svg viewBox="0 0 184 32" role="img">
-      <text x="2" y="23">
-        ИИ-помощник
-      </text>
-    </svg>
-  </span>
-)
 
 export const AssistantChat = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([firstMessage])
-  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [suggestions, setSuggestions] = useState<string[]>(quickPrompts)
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
-  const [handwritingCycle, setHandwritingCycle] = useState(0)
+  const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const messagesRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setHandwritingCycle((cycle) => cycle + 1)
-    }, handwritingReplayMs)
+    const showTimer = window.setTimeout(() => {
+      setIsAnnouncementVisible(true)
+    }, announcementDelayMs)
+    const hideTimer = window.setTimeout(() => {
+      setIsAnnouncementVisible(false)
+    }, announcementHideMs)
 
-    return () => window.clearInterval(interval)
+    return () => {
+      window.clearTimeout(showTimer)
+      window.clearTimeout(hideTimer)
+    }
   }, [])
 
   useEffect(() => {
@@ -60,6 +58,7 @@ export const AssistantChat = () => {
   }, [messages, isSending])
 
   const openChat = () => {
+    setIsAnnouncementVisible(false)
     setIsOpen(true)
     window.setTimeout(() => inputRef.current?.focus(), 80)
   }
@@ -182,16 +181,19 @@ export const AssistantChat = () => {
           </form>
         </div>
       ) : (
-        <button className="assistant-toggle" type="button" onClick={openChat} aria-label="Открыть AI-консультанта">
-          <span className="assistant-toggle-icon">
-            <ChatCircleDots size={25} weight="duotone" />
-          </span>
-          <span className="assistant-toggle-copy">
-            <strong className="sr-only">ИИ-помощник</strong>
-            <HandWritingLabel cycle={handwritingCycle} />
-            <small>задайте вопрос</small>
-          </span>
-        </button>
+        <>
+          {isAnnouncementVisible ? (
+            <div className="assistant-announcement" role="status" aria-live="polite">
+              {announcementText}
+            </div>
+          ) : null}
+          <button className="assistant-toggle" type="button" onClick={openChat} aria-label="Открыть AI-консультанта">
+            <span className="assistant-toggle-icon">
+              <ChatCircleDots size={25} weight="duotone" />
+            </span>
+            <strong>Задайте вопрос</strong>
+          </button>
+        </>
       )}
     </aside>
   )

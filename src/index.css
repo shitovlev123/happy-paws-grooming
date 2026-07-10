@@ -99,15 +99,6 @@ video {
   transform: translateY(0);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-
 .site-header {
   position: sticky;
   top: 16px;
@@ -952,6 +943,17 @@ textarea {
   padding: 14px;
 }
 
+.comment-field-note {
+  display: block;
+  max-width: 100%;
+  margin-top: 2px;
+  color: rgba(76, 74, 69, 0.58);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: rgba(76, 74, 69, 0.66);
@@ -1243,7 +1245,7 @@ textarea:focus {
 
 .assistant-toggle {
   gap: 12px;
-  min-height: 64px;
+  min-height: 58px;
   border-radius: 999px;
   padding: 8px 20px 8px 10px;
   background:
@@ -1256,6 +1258,37 @@ textarea:focus {
     transform 240ms var(--ease),
     background 240ms var(--ease);
   animation: assistant-enter 720ms var(--ease) both;
+}
+
+.assistant-announcement {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  width: min(330px, calc(100vw - 28px));
+  border: 1px solid rgba(32, 32, 30, 0.12);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  background: rgba(255, 253, 248, 0.96);
+  box-shadow: 0 18px 46px rgba(32, 32, 30, 0.13);
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 730;
+  line-height: 1.42;
+  pointer-events: none;
+  animation: assistant-announcement-in 520ms var(--ease) both;
+}
+
+.assistant-announcement::after {
+  position: absolute;
+  right: 28px;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  border-right: 1px solid rgba(32, 32, 30, 0.12);
+  border-bottom: 1px solid rgba(32, 32, 30, 0.12);
+  background: rgba(255, 253, 248, 0.96);
+  transform: rotate(45deg);
+  content: "";
 }
 
 .assistant-toggle-icon {
@@ -1280,52 +1313,13 @@ textarea:focus {
   content: "";
 }
 
-.assistant-toggle-copy,
-.assistant-toggle small {
+.assistant-toggle strong {
   display: block;
-}
-
-.assistant-toggle-copy {
-  min-width: 142px;
-}
-
-.assistant-toggle small {
-  margin-top: -2px;
-  color: rgba(255, 253, 248, 0.72);
-  font-size: 0.78rem;
-  font-weight: 680;
-}
-
-.assistant-handwriting {
-  display: block;
-  width: 144px;
-  height: 30px;
-  margin-bottom: -1px;
-}
-
-.assistant-handwriting svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.assistant-handwriting text {
-  fill: rgba(255, 253, 248, 0);
-  stroke: #fffdf8;
-  stroke-width: 0.9px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 420;
-  stroke-dashoffset: 420;
-  font-family: "Aptos Display", "Aptos", "Segoe UI Variable", system-ui, sans-serif;
-  font-size: 22px;
-  font-weight: 820;
-  letter-spacing: 0;
-  paint-order: stroke fill;
-  animation:
-    assistant-handwriting-stroke 1850ms var(--ease) forwards,
-    assistant-handwriting-fill 520ms ease 1200ms forwards;
+  color: #fffdf8;
+  font-size: 0.98rem;
+  font-weight: 830;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .assistant-toggle:hover {
@@ -1559,15 +1553,15 @@ textarea:focus {
   }
 }
 
-@keyframes assistant-handwriting-stroke {
-  to {
-    stroke-dashoffset: 0;
+@keyframes assistant-announcement-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
   }
-}
 
-@keyframes assistant-handwriting-fill {
   to {
-    fill: rgba(255, 253, 248, 0.94);
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -1922,19 +1916,6 @@ textarea:focus {
   .assistant-toggle-icon {
     width: 42px;
     height: 42px;
-  }
-
-  .assistant-toggle-copy {
-    min-width: 128px;
-  }
-
-  .assistant-handwriting {
-    width: 130px;
-    height: 28px;
-  }
-
-  .assistant-handwriting text {
-    font-size: 21px;
   }
 
   .assistant-panel {
