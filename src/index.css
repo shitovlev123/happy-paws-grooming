@@ -676,6 +676,11 @@ video {
   mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
 }
 
+.groomer-mobile-picker,
+.review-mobile-picker {
+  display: none;
+}
+
 .groomer-track {
   display: flex;
   gap: 16px;
@@ -832,6 +837,37 @@ video {
 .review-card span {
   margin-top: 4px;
   color: var(--muted);
+}
+
+.mobile-picker-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.mobile-picker-controls > div {
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-picker-controls button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.mobile-picker-controls button:active {
+  transform: scale(0.96);
 }
 
 .booking-section {
@@ -1837,6 +1873,16 @@ textarea:focus {
     --groomer-shift: -2076px;
     margin-inline: -14px;
     padding-inline: 14px;
+  }
+
+  .groomer-marquee,
+  .review-stream {
+    display: none;
+  }
+
+  .groomer-mobile-picker,
+  .review-mobile-picker {
+    display: block;
   }
 
   .groomer-card {
