@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process'
-import { mkdir } from 'node:fs/promises'
+import { mkdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 const defaultSuggestions = ['Подобрать услугу', 'Как подготовиться', 'Записать питомца']
@@ -16,6 +16,23 @@ const codexHome = () => process.env.CODEX_AGENT_HOME || join(process.cwd(), 'bot
 
 const codexWorkdir = () =>
   process.env.CODEX_AGENT_WORKDIR || join(process.cwd(), 'bot', 'data', 'codex-agent-workspace')
+
+const codexModelsCache = () => join(codexHome(), 'models_cache.json')
+
+const selectCodexModel = async () => {
+  try {
+    const cache = JSON.parse(await readFile(codexModelsCache(), 'utf8'))
+    const availableModels = new Set((cache.models || []).map((model) => model.slug))
+
+    if (availableModels.has('gpt-5.5')) {
+      return { model: 'gpt-5.5', effort: 'medium' }
+    }
+  } catch {
+    // Use the 5.6 fallback when the CLI model cache is unavailable.
+  }
+
+  return { model: 'gpt-5.6-luna', effort: 'low' }
+}
 
 const ansiEscapePattern = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g')
 
@@ -72,7 +89,7 @@ const parseFinalJsonLine = (stdout) => {
   return ''
 }
 
-const runCodex = async (prompt) => {
+const runCodex = async (prompt, { model, effort }) => {
   await mkdir(codexHome(), { recursive: true })
   await mkdir(codexWorkdir(), { recursive: true })
 
@@ -81,10 +98,14 @@ const runCodex = async (prompt) => {
       'exec',
       '--ephemeral',
       '--ignore-user-config',
+      '--model',
+      model,
       '--sandbox',
       'read-only',
       '-c',
       'approval_policy="never"',
+      '-c',
+      `model_reasoning_effort="${effort}"`,
       '--skip-git-repo-check',
       '--ignore-rules',
       '--color',
@@ -171,7 +192,7 @@ export const tryCodexAgent = async (message) => {
     return { ok: false, error: 'Message is required' }
   }
 
-  const result = await runCodex(buildPrompt(normalizedMessage))
+  const result = await runCodex(buildPrompt(normalizedMessage), await selectCodexModel())
 
   if (!result.ok) {
     console.error('Codex agent failed', { error: result.error })
