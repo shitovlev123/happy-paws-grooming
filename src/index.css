@@ -1471,7 +1471,22 @@ textarea:focus {
   gap: 8px;
   overflow-x: auto;
   border-top: 1px solid rgba(32, 32, 30, 0.08);
-  padding: 12px 14px 0;
+  padding: 12px 14px 10px;
+  scrollbar-color: rgba(32, 32, 30, 0.26) transparent;
+  scrollbar-width: thin;
+}
+
+.assistant-suggestions::-webkit-scrollbar {
+  height: 6px;
+}
+
+.assistant-suggestions::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.assistant-suggestions::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(32, 32, 30, 0.24);
 }
 
 .assistant-suggestions button {
@@ -1937,6 +1952,7 @@ textarea:focus {
 
   .assistant-suggestions {
     padding-inline: 12px;
+    padding-bottom: 10px;
   }
 }
 
