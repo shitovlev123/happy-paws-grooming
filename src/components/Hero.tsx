@@ -1,9 +1,7 @@
-import heroPoster from '../assets/hero-pets-calm.png'
-
 export const Hero = () => {
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <video className="hero-video" poster={heroPoster} autoPlay muted playsInline preload="auto">
+      <video className="hero-video" autoPlay muted playsInline preload="auto">
         <source src="/happy-paws-hero.mp4" type="video/mp4" />
       </video>
       <div className="hero-overlay" />

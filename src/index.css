@@ -243,6 +243,7 @@ video {
   display: grid;
   min-height: min(760px, calc(100dvh - 20px));
   margin-top: -86px;
+  background: #f7f7f4;
   overflow: hidden;
   isolation: isolate;
 }
@@ -1820,9 +1821,9 @@ textarea:focus {
   .hero-video {
     top: 0;
     height: 100%;
-    object-position: 66% center;
+    object-position: 76% center;
     filter: none;
-    transform: scale(1.01);
+    transform: none;
   }
 
   .hero-overlay {
