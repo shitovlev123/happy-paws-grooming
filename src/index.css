@@ -99,6 +99,15 @@ video {
   transform: translateY(0);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 .site-header {
   position: sticky;
   top: 16px;
@@ -1246,6 +1255,7 @@ textarea:focus {
   transition:
     transform 240ms var(--ease),
     background 240ms var(--ease);
+  animation: assistant-enter 720ms var(--ease) both;
 }
 
 .assistant-toggle-icon {
@@ -1270,22 +1280,52 @@ textarea:focus {
   content: "";
 }
 
-.assistant-toggle strong,
+.assistant-toggle-copy,
 .assistant-toggle small {
   display: block;
 }
 
-.assistant-toggle strong {
-  font-size: 0.98rem;
-  font-weight: 830;
-  line-height: 1.05;
+.assistant-toggle-copy {
+  min-width: 142px;
 }
 
 .assistant-toggle small {
-  margin-top: 2px;
+  margin-top: -2px;
   color: rgba(255, 253, 248, 0.72);
   font-size: 0.78rem;
   font-weight: 680;
+}
+
+.assistant-handwriting {
+  display: block;
+  width: 144px;
+  height: 30px;
+  margin-bottom: -1px;
+}
+
+.assistant-handwriting svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.assistant-handwriting text {
+  fill: rgba(255, 253, 248, 0);
+  stroke: #fffdf8;
+  stroke-width: 0.9px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  font-family: "Aptos Display", "Aptos", "Segoe UI Variable", system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 820;
+  letter-spacing: 0;
+  paint-order: stroke fill;
+  animation:
+    assistant-handwriting-stroke 1850ms var(--ease) forwards,
+    assistant-handwriting-fill 520ms ease 1200ms forwards;
 }
 
 .assistant-toggle:hover {
@@ -1295,7 +1335,7 @@ textarea:focus {
 
 .assistant-panel {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   width: min(410px, calc(100vw - 32px));
   height: min(640px, calc(100dvh - 44px));
   overflow: hidden;
@@ -1351,29 +1391,6 @@ textarea:focus {
   border-radius: 999px;
   background: rgba(32, 32, 30, 0.06);
   color: var(--ink);
-}
-
-.assistant-brief {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  border-bottom: 1px solid rgba(32, 32, 30, 0.08);
-  padding: 12px 14px;
-}
-
-.assistant-brief span {
-  display: inline-flex;
-  min-width: 0;
-  min-height: 34px;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: 1px solid rgba(32, 32, 30, 0.08);
-  border-radius: 999px;
-  background: rgba(255, 253, 248, 0.72);
-  color: var(--ink-soft);
-  font-size: 0.8rem;
-  font-weight: 740;
 }
 
 .assistant-messages {
@@ -1527,6 +1544,30 @@ textarea:focus {
   35% {
     opacity: 1;
     transform: translateY(-3px);
+  }
+}
+
+@keyframes assistant-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes assistant-handwriting-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes assistant-handwriting-fill {
+  to {
+    fill: rgba(255, 253, 248, 0.94);
   }
 }
 
@@ -1883,6 +1924,19 @@ textarea:focus {
     height: 42px;
   }
 
+  .assistant-toggle-copy {
+    min-width: 128px;
+  }
+
+  .assistant-handwriting {
+    width: 130px;
+    height: 28px;
+  }
+
+  .assistant-handwriting text {
+    font-size: 21px;
+  }
+
   .assistant-panel {
     width: calc(100vw - 28px);
     height: min(590px, calc(100dvh - 86px));
@@ -1890,15 +1944,6 @@ textarea:focus {
 
   .assistant-head {
     padding: 13px;
-  }
-
-  .assistant-brief {
-    gap: 6px;
-    padding: 10px 12px;
-  }
-
-  .assistant-brief span {
-    font-size: 0.74rem;
   }
 
   .assistant-message {

@@ -1,4 +1,4 @@
-import { CalendarCheck, ChatCircleDots, Heart, PaperPlaneTilt, Scissors, Sparkle, X } from '@phosphor-icons/react'
+import { ChatCircleDots, Heart, PaperPlaneTilt, Sparkle, X } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -20,17 +20,37 @@ const firstMessage: ChatMessage = {
 }
 
 const quickPrompts = ['Подобрать услугу', 'Как подготовиться', 'Свободное время']
+const handwritingReplayMs = 14000
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
+
+const HandWritingLabel = ({ cycle }: { cycle: number }) => (
+  <span className="assistant-handwriting" aria-hidden="true" key={cycle}>
+    <svg viewBox="0 0 184 32" role="img">
+      <text x="2" y="23">
+        ИИ-помощник
+      </text>
+    </svg>
+  </span>
+)
 
 export const AssistantChat = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([firstMessage])
-  const [suggestions, setSuggestions] = useState(quickPrompts)
+  const [suggestions, setSuggestions] = useState<string[]>([])
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
+  const [handwritingCycle, setHandwritingCycle] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const messagesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setHandwritingCycle((cycle) => cycle + 1)
+    }, handwritingReplayMs)
+
+    return () => window.clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     messagesRef.current?.scrollTo({
@@ -114,21 +134,6 @@ export const AssistantChat = () => {
             </button>
           </div>
 
-          <div className="assistant-brief" aria-label="Возможности помощника">
-            <span>
-              <Scissors size={16} weight="duotone" />
-              Услуги
-            </span>
-            <span>
-              <Heart size={16} weight="duotone" />
-              Подготовка
-            </span>
-            <span>
-              <CalendarCheck size={16} weight="duotone" />
-              Запись
-            </span>
-          </div>
-
           <div className="assistant-messages" aria-live="polite" ref={messagesRef}>
             {messages.map((message, index) => (
               <div className={`assistant-message ${message.role}`} key={`${message.role}-${index}`}>
@@ -152,13 +157,15 @@ export const AssistantChat = () => {
             ) : null}
           </div>
 
-          <div className="assistant-suggestions" aria-label="Быстрые вопросы">
-            {suggestions.map((suggestion) => (
-              <button type="button" onClick={() => void sendText(suggestion)} disabled={isSending} key={suggestion}>
-                {suggestion}
-              </button>
-            ))}
-          </div>
+          {suggestions.length > 0 ? (
+            <div className="assistant-suggestions" aria-label="Быстрые вопросы">
+              {suggestions.map((suggestion) => (
+                <button type="button" onClick={() => void sendText(suggestion)} disabled={isSending} key={suggestion}>
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
           <form className="assistant-form" onSubmit={sendMessage}>
             <input
@@ -166,7 +173,7 @@ export const AssistantChat = () => {
               type="text"
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              placeholder="Спросить про уход"
+              placeholder="Задайте свой вопрос"
               aria-label="Сообщение помощнику"
             />
             <button type="submit" aria-label="Отправить сообщение" disabled={isSending || !input.trim()}>
@@ -179,9 +186,10 @@ export const AssistantChat = () => {
           <span className="assistant-toggle-icon">
             <ChatCircleDots size={25} weight="duotone" />
           </span>
-          <span>
-            <strong>Помощник</strong>
-            <small>подбор ухода</small>
+          <span className="assistant-toggle-copy">
+            <strong className="sr-only">ИИ-помощник</strong>
+            <HandWritingLabel cycle={handwritingCycle} />
+            <small>задайте вопрос</small>
           </span>
         </button>
       )}
