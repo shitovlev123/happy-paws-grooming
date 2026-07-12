@@ -926,6 +926,8 @@ video {
 }
 
 .booking-form {
+  display: flex;
+  flex-direction: column;
   border: 1px solid rgba(255, 253, 248, 0.82);
   border-radius: var(--radius);
   padding: 30px;
@@ -937,6 +939,7 @@ video {
 
 .form-grid {
   display: grid;
+  flex: 1;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
 }
@@ -960,6 +963,21 @@ label {
 
 .full-field {
   grid-column: 1 / -1;
+}
+
+@media (min-width: 1081px) {
+  .form-grid {
+    grid-template-rows: repeat(4, auto) minmax(128px, 1fr);
+  }
+
+  .full-field {
+    min-height: 0;
+    grid-template-rows: auto minmax(128px, 1fr);
+  }
+
+  .full-field textarea {
+    height: 100%;
+  }
 }
 
 input,
