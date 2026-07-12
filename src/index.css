@@ -989,17 +989,6 @@ textarea {
   padding: 14px;
 }
 
-.comment-field-note {
-  display: block;
-  max-width: 100%;
-  margin-top: 2px;
-  color: rgba(76, 74, 69, 0.58);
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.5;
-  pointer-events: none;
-}
-
 input::placeholder,
 textarea::placeholder {
   color: rgba(76, 74, 69, 0.66);

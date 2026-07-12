@@ -25,12 +25,6 @@ const timeSlots = [
 ]
 const busySlots = new Set(['11:30', '15:00', '18:00'])
 const phoneControlKeys = new Set(['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'])
-const commentInfoText = {
-  booking:
-    'После отправки формы заявка сохраняется в базе, выбранное время становится занятым, а администратор получает уведомление в Telegram. При реальном внедрении заявки можно также отправлять в CRM, Google Sheets, email или другие сервисы.',
-  ai: 'На сайте работает ИИ-чат-бот. Он не ограничен только кнопками и шаблонными ответами: клиент может задать вопрос своими словами, а бот поможет сориентироваться по услугам, примерной стоимости, уходу и записи.',
-}
-
 const formatPhone = (value: string) => {
   const digits = value.replace(/\D/g, '')
 
@@ -362,11 +356,6 @@ export const BookingForm = () => {
               onChange={(event) => updateField('comment', event.target.value)}
               placeholder="Характер питомца, состояние шерсти или пожелания"
             />
-            <span className="comment-field-note">
-              {commentInfoText.booking}
-              <br />
-              {commentInfoText.ai}
-            </span>
           </label>
         </div>
 
