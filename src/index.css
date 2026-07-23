@@ -31,7 +31,7 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
   overflow-x: hidden;
   background:
@@ -372,6 +372,10 @@ video {
   justify-content: center;
 }
 
+.hero-booking-label-short {
+  display: none;
+}
+
 .hero-panel-location {
   background: var(--warm);
   color: var(--ink);
@@ -383,6 +387,8 @@ video {
 
 .hero-panel-copy {
   display: grid;
+  min-width: 0;
+  max-width: 100%;
   gap: 4px;
 }
 
@@ -2074,10 +2080,20 @@ textarea:focus {
     height: 124px;
     gap: 6px;
     padding: 18px 8px;
+    overflow: hidden;
+  }
+
+  .hero-panel-rating,
+  .hero-panel-location {
+    flex-direction: column;
+    gap: 7px;
+    padding-inline: 4px;
+    text-align: center;
   }
 
   .hero-panel-rating > svg,
   .hero-panel-location > svg {
+    flex: 0 0 auto;
     width: 19px;
     height: 19px;
   }
@@ -2087,19 +2103,40 @@ textarea:focus {
   }
 
   .hero-panel-copy strong {
-    font-size: 0.88rem;
+    max-width: 100%;
+    font-size: 0.8rem;
     line-height: 1.15;
+    overflow-wrap: anywhere;
   }
 
   .hero-panel-copy > span {
     display: none;
   }
 
+  .hero-booking-wrap {
+    width: 100%;
+  }
+
   .button.hero-booking-button {
-    min-width: 184px;
+    width: calc(100% - 14px);
+    min-width: 0;
     min-height: 54px;
-    padding: 0 18px;
-    font-size: 0.92rem;
+    gap: 6px;
+    padding: 0 8px;
+    font-size: 0.82rem;
+  }
+
+  .hero-booking-label-full {
+    display: none;
+  }
+
+  .hero-booking-label-short {
+    display: inline;
+  }
+
+  .hero-booking-button svg {
+    width: 18px;
+    height: 18px;
   }
 
   .button {
@@ -2220,6 +2257,7 @@ textarea:focus {
   .site-footer {
     gap: 28px;
     padding: 26px;
+    padding-bottom: 110px;
   }
 
   .assistant-chat {
@@ -2284,4 +2322,16 @@ textarea:focus {
     line-height: 1.25;
   }
 
+}
+
+@media (max-width: 360px) {
+  .hero-copy h1 {
+    font-size: 2.85rem;
+  }
+
+  .hero-panel-copy strong {
+    font-size: 0.74rem;
+    overflow-wrap: normal;
+    white-space: nowrap;
+  }
 }

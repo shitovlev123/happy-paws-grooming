@@ -33,7 +33,8 @@ export const Hero = () => (
         <div className="hero-panel hero-panel-action">
           <div className="hero-booking-wrap">
             <a className="button hero-booking-button" href="#booking">
-              Записать питомца
+              <span className="hero-booking-label-full">Записать питомца</span>
+              <span className="hero-booking-label-short">Записаться</span>
               <ArrowUpRight size={21} weight="bold" />
             </a>
           </div>
