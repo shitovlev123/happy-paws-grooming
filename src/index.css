@@ -251,10 +251,11 @@ video {
 
 .hero-inner {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
   padding: 160px 0 320px;
+  pointer-events: none;
 }
 
 .hero-copy {
@@ -363,6 +364,12 @@ video {
 .hero-panel-action {
   background: var(--accent);
   pointer-events: auto;
+}
+
+.hero-booking-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-panel-location {
@@ -1786,7 +1793,31 @@ textarea:focus {
 @keyframes hero-pet-rise {
   from {
     opacity: 0;
-    transform: translateY(72px);
+    transform: translateY(96px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-panel-rise {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-booking-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
   }
 
   to {
@@ -1820,20 +1851,40 @@ textarea:focus {
     animation-delay: 260ms;
   }
 
-  .hero-pet-column {
+  .hero-pet-crop {
     animation: hero-pet-rise 980ms var(--ease) both;
   }
 
-  .hero-pet-left {
-    animation-delay: 360ms;
+  .hero-pet-left .hero-pet-crop {
+    animation-delay: 300ms;
   }
 
-  .hero-pet-center {
-    animation-delay: 220ms;
+  .hero-pet-center .hero-pet-crop {
+    animation-delay: 180ms;
   }
 
-  .hero-pet-right {
-    animation-delay: 440ms;
+  .hero-pet-right .hero-pet-crop {
+    animation-delay: 380ms;
+  }
+
+  .hero-panel {
+    animation: hero-panel-rise 760ms var(--ease) both;
+  }
+
+  .hero-panel-rating {
+    animation-delay: 660ms;
+  }
+
+  .hero-panel-action {
+    animation-delay: 560ms;
+  }
+
+  .hero-panel-location {
+    animation-delay: 740ms;
+  }
+
+  .hero-booking-wrap {
+    animation: hero-booking-in 620ms var(--ease) 900ms both;
   }
 
   .hero-pet-left .hero-pet-crop img {
@@ -1862,6 +1913,17 @@ textarea:focus {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 1081px) and (max-height: 820px) {
+  .hero-pet-left .hero-pet-crop,
+  .hero-pet-right .hero-pet-crop {
+    width: 82%;
+  }
+
+  .hero-pet-center .hero-pet-crop {
+    width: 78%;
   }
 }
 

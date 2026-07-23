@@ -31,10 +31,12 @@ export const Hero = () => (
           <img src="/cozypaws/pet-center.png" alt="" />
         </div>
         <div className="hero-panel hero-panel-action">
-          <a className="button hero-booking-button" href="#booking">
-            Записать питомца
-            <ArrowUpRight size={21} weight="bold" />
-          </a>
+          <div className="hero-booking-wrap">
+            <a className="button hero-booking-button" href="#booking">
+              Записать питомца
+              <ArrowUpRight size={21} weight="bold" />
+            </a>
+          </div>
         </div>
       </div>
 
