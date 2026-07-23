@@ -241,7 +241,7 @@ video {
 .hero {
   position: relative;
   display: grid;
-  height: min(840px, 100dvh);
+  height: 100dvh;
   min-height: 400px;
   margin-top: -86px;
   background: var(--paper);
@@ -333,17 +333,17 @@ video {
 }
 
 .hero-pet-left .hero-pet-crop {
-  width: 89%;
+  width: min(89%, 620px);
   aspect-ratio: 870 / 378;
 }
 
 .hero-pet-center .hero-pet-crop {
-  width: 92%;
+  width: min(92%, 720px);
   aspect-ratio: 976 / 682;
 }
 
 .hero-pet-right .hero-pet-crop {
-  width: 87%;
+  width: min(87%, 620px);
   aspect-ratio: 870 / 431;
 }
 
