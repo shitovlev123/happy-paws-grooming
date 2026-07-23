@@ -241,8 +241,8 @@ video {
 .hero {
   position: relative;
   display: grid;
-  height: min(840px, calc(100dvh - 16px));
-  min-height: 700px;
+  height: min(840px, 100dvh);
+  min-height: 400px;
   margin-top: -86px;
   background: var(--paper);
   overflow: hidden;
@@ -254,7 +254,7 @@ video {
   z-index: 3;
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 160px 0 320px;
+  padding: 120px 0 320px;
   pointer-events: none;
 }
 
@@ -287,14 +287,15 @@ video {
 }
 
 .hero-copy h1 {
-  margin-top: 14px;
-  font-size: 7.15rem;
+  margin-top: 12px;
+  font-size: 6rem;
   line-height: 0.86;
-  white-space: nowrap;
+  white-space: normal;
 }
 
-.hero-copy h1 span + span {
-  margin-left: 0.16em;
+.hero-copy h1 span {
+  display: block;
+  margin-left: 0;
 }
 
 .hero-pet-stage {
@@ -1871,7 +1872,7 @@ textarea:focus {
   }
 
   .hero-copy h1 span {
-    display: inline-block;
+    display: block;
     animation: hero-word-pop 900ms cubic-bezier(0.34, 1.56, 0.64, 1) 260ms both;
   }
 
@@ -1930,13 +1931,119 @@ textarea:focus {
 }
 
 @media (min-width: 1081px) and (max-height: 820px) {
+  .hero {
+    height: 100dvh;
+    min-height: 400px;
+  }
+
+  .hero-inner {
+    padding-top: 100px;
+  }
+
+  .hero-copy h1 {
+    font-size: 4.8rem;
+  }
+
   .hero-pet-left .hero-pet-crop,
   .hero-pet-right .hero-pet-crop {
     width: 76%;
   }
 
   .hero-pet-center .hero-pet-crop {
+    width: 70%;
+  }
+
+  .hero-panel {
+    height: 125px;
+    padding-block: 18px;
+  }
+
+  .button.hero-booking-button {
+    min-height: 54px;
+  }
+}
+
+@media (min-width: 1081px) and (max-height: 680px) {
+  .hero-inner {
+    padding-top: 100px;
+  }
+
+  .hero-copy h1 {
+    font-size: 4.2rem;
+  }
+
+  .hero-pet-left .hero-pet-crop,
+  .hero-pet-right .hero-pet-crop {
+    width: 66%;
+  }
+
+  .hero-pet-center .hero-pet-crop {
     width: 60%;
+  }
+
+  .hero-panel {
+    height: 108px;
+    padding-block: 14px;
+  }
+
+  .hero-panel-copy strong {
+    font-size: 1.1rem;
+  }
+
+  .hero-panel-copy > span {
+    font-size: 0.78rem;
+  }
+
+  .button.hero-booking-button {
+    min-height: 50px;
+    font-size: 0.96rem;
+  }
+}
+
+@media (min-width: 1081px) and (max-height: 520px) {
+  .hero-inner {
+    padding-top: 94px;
+  }
+
+  .hero-note {
+    font-size: 0.75rem;
+  }
+
+  .hero-copy h1 {
+    margin-top: 8px;
+    font-size: 3rem;
+  }
+
+  .hero-pet-left .hero-pet-crop,
+  .hero-pet-right .hero-pet-crop {
+    width: 44%;
+  }
+
+  .hero-pet-center .hero-pet-crop {
+    width: 36%;
+  }
+
+  .hero-panel {
+    height: 84px;
+    padding-block: 8px;
+  }
+
+  .hero-panel-content {
+    gap: 8px;
+  }
+
+  .hero-panel-copy strong {
+    font-size: 0.98rem;
+  }
+
+  .hero-panel-copy > span {
+    font-size: 0.7rem;
+  }
+
+  .button.hero-booking-button {
+    min-width: 220px;
+    min-height: 44px;
+    font-size: 0.9rem;
   }
 }
 
