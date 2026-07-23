@@ -241,51 +241,24 @@ video {
 .hero {
   position: relative;
   display: grid;
-  min-height: min(760px, calc(100dvh - 20px));
+  height: min(840px, calc(100dvh - 16px));
+  min-height: 700px;
   margin-top: -86px;
-  background: #f7f7f4;
+  background: var(--paper);
   overflow: hidden;
   isolation: isolate;
 }
 
-.hero-video,
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.hero-video {
-  top: -28px;
-  bottom: auto;
-  z-index: -3;
-  opacity: 0.97;
-  height: calc(100% + 58px);
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(0.96) contrast(0.98);
-  transform: scale(1.04);
-}
-
-.hero-overlay {
-  z-index: -2;
-  background:
-    linear-gradient(90deg, rgba(255, 253, 248, 0.96) 0%, rgba(255, 253, 248, 0.86) 38%, rgba(255, 253, 248, 0.18) 74%),
-    linear-gradient(180deg, rgba(247, 247, 244, 0.08) 0%, rgba(247, 247, 244, 0.28) 64%, rgba(247, 247, 244, 0.96) 100%);
-}
-
 .hero-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 700px);
-  align-items: center;
+  position: relative;
+  z-index: 1;
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 172px 0 58px;
+  padding: 160px 0 320px;
 }
 
 .hero-copy {
-  max-width: 760px;
+  text-align: center;
 }
 
 .hero-note,
@@ -313,33 +286,125 @@ video {
 }
 
 .hero-copy h1 {
-  max-width: 680px;
-  font-size: 7rem;
+  margin-top: 14px;
+  font-size: 7.15rem;
+  line-height: 0.86;
+  white-space: nowrap;
 }
 
-.hero-copy p:not(.hero-note) {
-  max-width: 570px;
-  margin: 24px 0 0;
-  color: #373631;
-  font-size: 1.16rem;
-  font-weight: 560;
-  line-height: 1.65;
+.hero-pet-stage {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 0.96fr 1.08fr 0.96fr;
+  align-items: end;
+  pointer-events: none;
 }
 
-.hero-actions {
+.hero-pet-column {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: flex-start;
-  max-width: 570px;
-  margin-top: 34px;
+  min-width: 0;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-.hero-actions .button.primary {
-  min-width: 250px;
+.hero-pet-crop {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  margin-bottom: -1px;
+}
+
+.hero-pet-crop img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  transform-origin: 50% 100%;
+}
+
+.hero-pet-left .hero-pet-crop {
+  width: 89%;
+  aspect-ratio: 870 / 378;
+}
+
+.hero-pet-center .hero-pet-crop {
+  width: 92%;
+  aspect-ratio: 976 / 682;
+}
+
+.hero-pet-right .hero-pet-crop {
+  width: 87%;
+  aspect-ratio: 870 / 431;
+}
+
+.hero-panel {
+  display: flex;
+  width: 100%;
+  height: 154px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px 30px;
+}
+
+.hero-panel-rating {
+  background: var(--porcelain);
+  color: var(--ink);
+}
+
+.hero-panel-rating > svg {
+  color: var(--sun);
+}
+
+.hero-panel-action {
+  background: var(--accent);
+  pointer-events: auto;
+}
+
+.hero-panel-location {
+  background: var(--warm);
+  color: var(--ink);
+}
+
+.hero-panel-location > svg {
+  color: var(--accent);
+}
+
+.hero-panel-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.hero-panel-copy strong {
+  font-size: 1.35rem;
+  font-weight: 820;
+  line-height: 1;
+}
+
+.hero-panel-copy > span {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.button.hero-booking-button {
+  min-width: 258px;
   min-height: 62px;
-  padding: 0 36px;
-  font-size: 1.08rem;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: var(--ink);
+  color: #fffdf8;
+  box-shadow: 0 18px 36px rgba(89, 27, 15, 0.2);
+  font-size: 1.04rem;
+}
+
+.hero-booking-button:hover {
+  background: #35332f;
+  transform: translateY(-2px);
 }
 
 .button {
@@ -1706,7 +1771,83 @@ textarea:focus {
   }
 }
 
+@keyframes hero-heading-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-pet-rise {
+  from {
+    opacity: 0;
+    transform: translateY(72px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-pet-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(4px) scale(1.008);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .hero-note {
+    animation: hero-heading-in 700ms var(--ease) 120ms both;
+  }
+
+  .hero-copy h1 span {
+    display: inline-block;
+    animation: hero-heading-in 840ms var(--ease) 180ms both;
+  }
+
+  .hero-copy h1 span:last-child {
+    animation-delay: 260ms;
+  }
+
+  .hero-pet-column {
+    animation: hero-pet-rise 980ms var(--ease) both;
+  }
+
+  .hero-pet-left {
+    animation-delay: 360ms;
+  }
+
+  .hero-pet-center {
+    animation-delay: 220ms;
+  }
+
+  .hero-pet-right {
+    animation-delay: 440ms;
+  }
+
+  .hero-pet-left .hero-pet-crop img {
+    animation: hero-pet-bob 7.4s ease-in-out 1.4s infinite;
+  }
+
+  .hero-pet-center .hero-pet-crop img {
+    animation: hero-pet-bob 8.2s ease-in-out 1.1s infinite reverse;
+  }
+
+  .hero-pet-right .hero-pet-crop img {
+    animation: hero-pet-bob 6.8s ease-in-out 1.7s infinite;
+  }
+
   .reveal {
     animation: reveal-up 780ms var(--ease) both;
     animation-delay: calc(var(--reveal-index) * 70ms);
@@ -1735,18 +1876,26 @@ textarea:focus {
   }
 
   .hero {
-    min-height: min(780px, calc(100dvh - 16px));
+    height: min(790px, calc(100dvh - 12px));
+    min-height: 720px;
   }
 
   .hero-inner {
-    grid-template-columns: 1fr;
-    align-items: end;
-    padding-top: 154px;
+    padding: 148px 0 300px;
   }
 
   .hero-copy h1 {
-    max-width: 620px;
-    font-size: 5.2rem;
+    font-size: 5.15rem;
+    line-height: 0.9;
+    white-space: normal;
+  }
+
+  .hero-copy h1 span {
+    display: block;
+  }
+
+  .hero-panel {
+    height: 140px;
   }
 
   .reviews-section,
@@ -1821,44 +1970,74 @@ textarea:focus {
   }
 
   .hero {
-    min-height: min(780px, calc(100dvh - 18px));
+    height: 700px;
+    min-height: 700px;
     margin-top: -78px;
   }
 
-  .hero-video {
-    top: 0;
-    height: 100%;
-    object-position: 76% center;
-    filter: none;
-    transform: none;
-  }
-
-  .hero-overlay {
-    background:
-      linear-gradient(90deg, rgba(255, 253, 248, 0.96) 0%, rgba(255, 253, 248, 0.78) 42%, rgba(255, 253, 248, 0.16) 78%, rgba(255, 253, 248, 0.06) 100%),
-      linear-gradient(180deg, rgba(255, 253, 248, 0.06) 0%, rgba(255, 253, 248, 0.1) 58%, rgba(255, 253, 248, 0.72) 100%);
-  }
-
   .hero-inner {
-    width: calc(100% - 28px);
-    gap: 24px;
-    padding: 132px 0 42px;
+    width: calc(100% - 24px);
+    padding: 124px 0 286px;
   }
 
   .hero-copy h1 {
-    max-width: 560px;
-    font-size: 3.7rem;
-    line-height: 0.98;
+    margin-top: 12px;
+    font-size: 3.62rem;
+    line-height: 0.9;
   }
 
-  .hero-copy p:not(.hero-note) {
-    max-width: 96%;
-    font-size: 1rem;
+  .hero-note {
+    font-size: 0.82rem;
   }
 
-  .hero-actions {
-    gap: 10px;
-    margin-top: 30px;
+  .hero-pet-stage {
+    grid-template-columns: 0.84fr 1.32fr 0.84fr;
+  }
+
+  .hero-pet-left .hero-pet-crop {
+    width: 145%;
+    margin-left: -34%;
+  }
+
+  .hero-pet-center .hero-pet-crop {
+    width: 140%;
+  }
+
+  .hero-pet-right .hero-pet-crop {
+    width: 145%;
+    margin-right: -34%;
+  }
+
+  .hero-panel {
+    height: 124px;
+    gap: 6px;
+    padding: 18px 8px;
+  }
+
+  .hero-panel-rating > svg,
+  .hero-panel-location > svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .hero-panel-copy {
+    gap: 0;
+  }
+
+  .hero-panel-copy strong {
+    font-size: 0.88rem;
+    line-height: 1.15;
+  }
+
+  .hero-panel-copy > span {
+    display: none;
+  }
+
+  .button.hero-booking-button {
+    min-width: 184px;
+    min-height: 54px;
+    padding: 0 18px;
+    font-size: 0.92rem;
   }
 
   .button {
@@ -2034,17 +2213,13 @@ textarea:focus {
   }
 
   .hero-copy h1 {
-    font-size: 3.18rem;
+    font-size: 3.32rem;
   }
 
   .hero-note {
-    max-width: 220px;
+    max-width: 260px;
+    margin-inline: auto;
     line-height: 1.25;
-  }
-
-  .hero-actions .button {
-    width: 100%;
-    min-height: 56px;
   }
 
 }
