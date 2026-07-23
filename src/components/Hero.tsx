@@ -18,11 +18,13 @@ export const Hero = () => (
           <img src="/cozypaws/pet-left.png" alt="" />
         </div>
         <div className="hero-panel hero-panel-rating">
-          <Star size={25} weight="fill" />
-          <span className="hero-panel-copy">
-            <strong>4,9</strong>
-            <span>средняя оценка гостей</span>
-          </span>
+          <div className="hero-panel-content">
+            <Star size={25} weight="fill" />
+            <span className="hero-panel-copy">
+              <strong>4,9</strong>
+              <span>средняя оценка гостей</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -46,11 +48,13 @@ export const Hero = () => (
           <img src="/cozypaws/pet-right.png" alt="" />
         </div>
         <div className="hero-panel hero-panel-location">
-          <MapPin size={27} weight="fill" />
-          <span className="hero-panel-copy">
-            <strong>Хамовники</strong>
-            <span>Москва, ул. Плющиха, 27</span>
-          </span>
+          <div className="hero-panel-content">
+            <MapPin size={27} weight="fill" />
+            <span className="hero-panel-copy">
+              <strong>Хамовники</strong>
+              <span>Москва, ул. Плющиха, 27</span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
