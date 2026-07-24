@@ -254,7 +254,7 @@ video {
   z-index: 3;
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 120px 0 320px;
+  padding: clamp(148px, 16vh, 172px) 0 320px;
   pointer-events: none;
 }
 
@@ -288,7 +288,7 @@ video {
 
 .hero-copy h1 {
   margin-top: 12px;
-  font-size: clamp(6.5rem, 7vw, 8rem);
+  font-size: clamp(6rem, 7vw, 8rem);
   line-height: 0.86;
   white-space: nowrap;
 }
@@ -1937,11 +1937,11 @@ textarea:focus {
   }
 
   .hero-inner {
-    padding-top: 100px;
+    padding-top: 148px;
   }
 
   .hero-copy h1 {
-    font-size: 4.8rem;
+    font-size: clamp(5rem, 6.9vw, 5.5rem);
   }
 
   .hero-pet-left .hero-pet-crop,
