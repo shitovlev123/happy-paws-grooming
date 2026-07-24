@@ -11,3 +11,15 @@
     file_server
   }
 }
+
+https://api.213-176-114-254.sslip.io:8443 {
+  encode zstd gzip
+
+  handle /api/* {
+    reverse_proxy 127.0.0.1:3001
+  }
+
+  handle {
+    respond "Not found" 404
+  }
+}

@@ -1,0 +1,6 @@
+# The Vercel deployment is frontend-only. These directories run on the VPS.
+api
+bot
+deploy
+server
+.github
