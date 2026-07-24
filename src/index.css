@@ -1963,6 +1963,12 @@ textarea:focus {
   }
 }
 
+@media (min-width: 1081px) and (min-height: 821px) and (max-width: 1700px) {
+  .hero-inner {
+    padding-top: clamp(210px, 23vh, 236px);
+  }
+}
+
 @media (min-width: 1081px) and (max-height: 680px) {
   .hero-inner {
     padding-top: 100px;
