@@ -1,12 +1,7 @@
 import { ArrowUpRight, MapPin, Star } from '@phosphor-icons/react'
-import { Marquee } from './Marquee'
 
 export const Hero = () => (
   <section className="hero" aria-labelledby="hero-title">
-    <div className="hero-marquee-wrap">
-      <Marquee />
-    </div>
-
     <div className="hero-inner">
       <div className="hero-copy">
         <p className="hero-note">Салон для собак и кошек в Хамовниках</p>
