@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { PawPrint } from '@phosphor-icons/react'
-import { Marquee } from './Marquee'
 
 export const Header = () => {
   const [isHidden, setIsHidden] = useState(false)
@@ -38,33 +37,27 @@ export const Header = () => {
   }, [])
 
   return (
-    <div className={`site-chrome${isHidden ? ' site-header-hidden' : ''}`}>
-      <div className="site-top-marquee">
-        <Marquee />
-      </div>
+    <header className={`site-header${isHidden ? ' site-header-hidden' : ''}`}>
+      <a className="brand" href="/" aria-label="Счастливые лапки">
+        <span className="brand-mark">
+          <PawPrint size={24} weight="duotone" />
+        </span>
+        <span>
+          <strong>Счастливые лапки</strong>
+          <small>груминг-салон</small>
+        </span>
+      </a>
 
-      <header className="site-header">
-        <a className="brand" href="/" aria-label="Счастливые лапки">
-          <span className="brand-mark">
-            <PawPrint size={24} weight="duotone" />
-          </span>
-          <span>
-            <strong>Счастливые лапки</strong>
-            <small>груминг-салон</small>
-          </span>
-        </a>
+      <nav className="nav-links" aria-label="Основная навигация">
+        <a href="#services">Услуги</a>
+        <a href="#groomers">Мастера</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
 
-        <nav className="nav-links" aria-label="Основная навигация">
-          <a href="#services">Услуги</a>
-          <a href="#groomers">Мастера</a>
-          <a href="#reviews">Отзывы</a>
-          <a href="#contacts">Контакты</a>
-        </nav>
-
-        <a className="header-action" href="#booking">
-          Записаться
-        </a>
-      </header>
-    </div>
+      <a className="header-action" href="#booking">
+        Записаться
+      </a>
+    </header>
   )
 }
