@@ -5,6 +5,7 @@ import { Footer } from '../components/Footer'
 import { Groomers } from '../components/Groomers'
 import { Header } from '../components/Header'
 import { Hero } from '../components/Hero'
+import { Marquee } from '../components/Marquee'
 import { Reviews } from '../components/Reviews'
 import { Services } from '../components/Services'
 
@@ -36,6 +37,7 @@ export const LandingPage = () => {
       <Header />
       <main id="content">
         <Hero />
+        <Marquee />
         <Services />
         <Groomers />
         <Reviews />

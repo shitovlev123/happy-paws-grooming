@@ -18,7 +18,7 @@
 - Статусы заявок: новая, подтверждена, выполнена, отменена.
 - SQLite-хранилище для заявок, админов, pending-действий и статусов.
 - Floating AI-chat widget на сайте: mock по умолчанию или изолированный Codex CLI agent на VPS.
-- Frontend deployment в Vercel, backend deployment на VPS через Caddy, Node.js systemd services и GitHub Actions.
+- VPS deployment через Caddy, Node.js systemd services и GitHub Actions.
 
 ## Технологии
 
@@ -145,14 +145,7 @@ GET /api/health
 
 На VPS бот работает в polling-режиме через `happy-paws-bot.service`. Это важно для текущего сервера, потому что порт `443` занят Xray Reality, а Telegram webhook требует публичный HTTPS URL.
 
-## Deployment architecture
-
-- Vercel собирает и отдаёт только React/Vite frontend.
-- Запросы Vercel `/api/*` проксируются на VPS endpoint `https://api.213-176-114-254.sslip.io:8443/api/*`.
-- Node API, Telegram bot, Codex agent и SQLite остаются на VPS.
-- `.vercelignore` исключает backend-код из Vercel deployment artifact.
-
-## VPS backend deployment
+## VPS deployment
 
 Файлы инфраструктуры лежат в `deploy/`:
 
@@ -165,9 +158,9 @@ deploy/vps-deploy.sh
 
 Схема:
 
-- Caddy оставляет текущий frontend доступным на `:80` как резервный вариант.
-- Caddy публикует HTTPS API на `api.213-176-114-254.sslip.io:8443`.
-- Caddy проксирует `/api/*` на локальный Node API `127.0.0.1:3001`.
+- Caddy слушает `:80`.
+- Caddy отдаёт `dist/`.
+- Caddy проксирует `/api/*` на `127.0.0.1:3001`.
 - `happy-paws-api.service` запускает Node API.
 - `happy-paws-bot.service` запускает Telegram polling bot.
 - SQLite хранится одним файлом, например `/opt/happy-paws/data/happy-paws.sqlite`.
