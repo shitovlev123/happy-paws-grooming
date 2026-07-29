@@ -26,7 +26,6 @@ export const Services = () => {
   return (
     <section className="section services-section" id="services">
       <div className="section-intro reveal">
-        <span>Услуги</span>
         <h2>Уход под шерсть, характер и настроение питомца</h2>
       </div>
 

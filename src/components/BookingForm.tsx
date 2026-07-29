@@ -199,7 +199,6 @@ export const BookingForm = () => {
   return (
     <section className="section booking-section" id="booking">
       <div className="booking-copy reveal">
-        <span>Онлайн-запись</span>
         <h2>Расскажите о питомце, мы бережно подберем уход</h2>
         <p>
           Выберите услугу, дату и время. Заявка сразу уйдет в салон, а администратор

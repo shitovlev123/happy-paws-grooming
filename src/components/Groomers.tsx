@@ -10,7 +10,6 @@ export const Groomers = () => {
   return (
     <section className="section groomers-section" id="groomers">
       <div className="section-intro reveal">
-        <span>Мастера</span>
         <h2>Мастера, которым спокойно доверить питомца</h2>
         <p>
           Команда работает с разными породами, типами шерсти и темпераментами.

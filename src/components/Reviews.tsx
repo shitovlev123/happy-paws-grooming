@@ -10,7 +10,6 @@ export const Reviews = () => {
   return (
     <section className="section reviews-section" id="reviews">
       <div className="review-lead reveal">
-        <span>Отзывы</span>
         <h2>Отзывы владельцев</h2>
         <div className="review-score">
           <strong>4,8</strong>
