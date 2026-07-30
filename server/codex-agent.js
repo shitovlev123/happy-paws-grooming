@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process'
 import { mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
 
-const defaultSuggestions = ['Подобрать услугу', 'Как подготовиться', 'Записать питомца']
+const defaultSuggestions = ['Подобрать услугу', 'Как подготовиться', 'Записать питомца', 'Цены на услуги']
 const trueValues = new Set(['1', 'true', 'yes', 'on'])
 
 const isCodexEnabled = () => trueValues.has(String(process.env.CODEX_AGENT_ENABLED || '').toLowerCase())

@@ -19,7 +19,8 @@ const firstMessage: ChatMessage = {
   content: 'Здравствуйте! Я здесь чтобы помочь вам 😊. Используйте заготовленные вопросы или задайте свой.',
 }
 
-const quickPrompts = ['Подобрать услугу', 'Как подготовиться', 'Свободное время']
+const maxSuggestions = 4
+const quickPrompts = ['Подобрать услугу', 'Как подготовиться', 'Свободное время', 'Цены на услуги']
 const announcementDelayMs = 2400
 const announcementHideMs = 12000
 const announcementText = 'Не знаете, какую услугу выбрать? Спросите ИИ-консультанта.'
@@ -98,7 +99,7 @@ export const AssistantChat = () => {
       }
 
       setMessages((current) => [...current, { role: 'assistant', content: data.text || firstMessage.content }])
-      setSuggestions(data.suggestions?.length ? data.suggestions.slice(0, 3) : quickPrompts)
+      setSuggestions(data.suggestions?.length ? data.suggestions.slice(0, maxSuggestions) : quickPrompts)
     } catch {
       setMessages((current) => [
         ...current,
@@ -107,7 +108,7 @@ export const AssistantChat = () => {
           content: 'Сейчас не получилось ответить. Заявку можно оставить в форме, администратор увидит её в Telegram.',
         },
       ])
-      setSuggestions(['Перейти к записи', 'Контакты салона', 'Выбрать услугу'])
+      setSuggestions(['Перейти к записи', 'Контакты салона', 'Выбрать услугу', 'Цены на услуги'])
     } finally {
       setIsSending(false)
     }
