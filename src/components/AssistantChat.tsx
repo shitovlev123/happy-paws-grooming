@@ -1,4 +1,4 @@
-import { ChatCircleDots, Heart, PaperPlaneTilt, Sparkle, X } from '@phosphor-icons/react'
+import { CaretDown, ChatCircleDots, Heart, PaperPlaneTilt, Sparkle, X } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -33,6 +33,7 @@ export const AssistantChat = () => {
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false)
+  const [areSuggestionsVisible, setAreSuggestionsVisible] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
   const messagesRef = useRef<HTMLDivElement>(null)
 
@@ -73,6 +74,7 @@ export const AssistantChat = () => {
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: message }]
     setMessages(nextMessages)
     setInput('')
+    setAreSuggestionsVisible(false)
     setIsSending(true)
 
     try {
@@ -116,6 +118,11 @@ export const AssistantChat = () => {
     void sendText(input)
   }
 
+  const sendSuggestion = (suggestion: string) => {
+    setAreSuggestionsVisible(false)
+    void sendText(suggestion)
+  }
+
   return (
     <aside className={`assistant-chat ${isOpen ? 'is-open' : ''}`} aria-label="AI-консультант">
       {isOpen ? (
@@ -156,17 +163,40 @@ export const AssistantChat = () => {
             ) : null}
           </div>
 
-          {suggestions.length > 0 ? (
+          {suggestions.length > 0 && areSuggestionsVisible ? (
             <div className="assistant-suggestions" aria-label="Быстрые вопросы">
-              {suggestions.map((suggestion) => (
-                <button type="button" onClick={() => void sendText(suggestion)} disabled={isSending} key={suggestion}>
-                  {suggestion}
+              <div className="assistant-suggestions-head">
+                <span>Быстрые вопросы</span>
+                <button
+                  className="assistant-suggestions-hide"
+                  type="button"
+                  aria-label="Скрыть быстрые вопросы"
+                  onClick={() => setAreSuggestionsVisible(false)}
+                >
+                  <CaretDown size={16} weight="bold" />
                 </button>
-              ))}
+              </div>
+              <div className="assistant-suggestions-list">
+                {suggestions.map((suggestion) => (
+                  <button type="button" onClick={() => sendSuggestion(suggestion)} disabled={isSending} key={suggestion}>
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
             </div>
           ) : null}
 
           <form className="assistant-form" onSubmit={sendMessage}>
+            {suggestions.length > 0 && !areSuggestionsVisible ? (
+              <button
+                className="assistant-suggestions-restore"
+                type="button"
+                onClick={() => setAreSuggestionsVisible(true)}
+                disabled={isSending}
+              >
+                Показать быстрые вопросы
+              </button>
+            ) : null}
             <input
               ref={inputRef}
               type="text"

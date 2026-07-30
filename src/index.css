@@ -1287,7 +1287,9 @@ textarea:focus {
 
 .assistant-toggle,
 .assistant-head button,
-.assistant-suggestions button,
+.assistant-suggestions-list button,
+.assistant-suggestions-hide,
+.assistant-suggestions-restore,
 .assistant-form button {
   display: inline-flex;
   align-items: center;
@@ -1520,42 +1522,58 @@ textarea:focus {
 }
 
 .assistant-suggestions {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
+  display: grid;
+  gap: 10px;
   border-top: 1px solid rgba(32, 32, 30, 0.08);
-  padding: 12px 14px 10px;
-  scrollbar-color: rgba(32, 32, 30, 0.26) transparent;
-  scrollbar-width: thin;
+  padding: 12px 14px;
+  background: rgba(255, 253, 248, 0.58);
 }
 
-.assistant-suggestions::-webkit-scrollbar {
-  height: 6px;
+.assistant-suggestions-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.assistant-suggestions::-webkit-scrollbar-track {
-  background: transparent;
+.assistant-suggestions-head span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 780;
 }
 
-.assistant-suggestions::-webkit-scrollbar-thumb {
+.assistant-suggestions-hide {
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
-  background: rgba(32, 32, 30, 0.24);
+  background: rgba(32, 32, 30, 0.06);
+  color: var(--ink-soft);
 }
 
-.assistant-suggestions button {
-  flex: 0 0 auto;
-  min-height: 34px;
+.assistant-suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.assistant-suggestions-list button,
+.assistant-suggestions-restore {
   border: 1px solid rgba(32, 32, 30, 0.11);
   border-radius: 999px;
-  padding: 0 12px;
   background: rgba(255, 253, 248, 0.76);
   color: var(--ink-soft);
   font-size: 0.82rem;
   font-weight: 760;
+}
+
+.assistant-suggestions-list button {
+  min-height: 34px;
+  padding: 0 12px;
   white-space: nowrap;
 }
 
-.assistant-suggestions button:disabled {
+.assistant-suggestions button:disabled,
+.assistant-suggestions-restore:disabled {
   opacity: 0.55;
 }
 
@@ -1564,6 +1582,17 @@ textarea:focus {
   grid-template-columns: 1fr auto;
   gap: 10px;
   padding: 12px;
+}
+
+.assistant-suggestions-restore {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 32px;
+  padding: 0 12px;
+  border-color: rgba(32, 32, 30, 0.14);
+  background: rgba(255, 253, 248, 0.96);
+  box-shadow: 0 8px 22px rgba(32, 32, 30, 0.06);
+  color: var(--ink);
 }
 
 .assistant-form input {
@@ -1582,7 +1611,7 @@ textarea:focus {
   box-shadow: 0 0 0 4px rgba(232, 95, 67, 0.12);
 }
 
-.assistant-form button {
+.assistant-form button:not(.assistant-suggestions-restore) {
   width: 46px;
   height: 46px;
   border-radius: 999px;
