@@ -241,7 +241,7 @@ video {
 .hero {
   position: relative;
   display: grid;
-  min-height: min(760px, calc(100dvh - 20px));
+  min-height: max(760px, calc(100dvh - 96px));
   margin-top: -86px;
   background: #f7f7f4;
   overflow: hidden;
@@ -1764,7 +1764,7 @@ textarea:focus {
   }
 
   .hero {
-    min-height: min(780px, calc(100dvh - 16px));
+    min-height: max(780px, calc(100dvh - 96px));
   }
 
   .hero-inner {
@@ -1850,7 +1850,7 @@ textarea:focus {
   }
 
   .hero {
-    min-height: min(780px, calc(100dvh - 18px));
+    min-height: max(780px, calc(100dvh - 74px));
     margin-top: -78px;
   }
 
